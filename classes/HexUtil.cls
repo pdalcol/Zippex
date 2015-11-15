@@ -127,7 +127,7 @@ public class HexUtil {
         System.debug('CRC32 - table = ' + intToHex(crc,4));// + '    ' + (crc & 4294967295L));
         return crc;
     }
-
+/*
     public static Integer CRC32Table(Zipper.FileObject fObj) 
     { 
 
@@ -135,7 +135,7 @@ public class HexUtil {
         *  Using table lookup
         *  Reference: http://snippets.dzone.com/tag/crc32
         **************************************************************************/
-
+/*
         //String hexString = EncodingUtil.convertToHex(data);
         //Integer[] intArr = new List<Integer>();//fObj.fileData.getChars();
         //hexStr = null;
@@ -157,7 +157,7 @@ public class HexUtil {
 
         System.debug('CRC32 - table = ' + intToHex(crc,4));// + '    ' + (crc & 4294967295L));
         return crc;
-    }
+    }*/
 
     //    public static Integer CRC32Table (Blob data) 
     //    { 
@@ -288,6 +288,20 @@ public class HexUtil {
     }
 
 
+    public static Long hexToIntLittleEndian (String hexString)
+    {  
+        Long mask = 4294967295L; //FFFFFF
+        String tempString = '';
+        
+        for (Integer j = hexString.length(); j > 0; j=j-2)
+        
+            {
+                tempString = tempString + hexString.substring(j-2,j-1);
+                tempString = tempString + hexString.substring(j-1,j);
+            }
+        return hexToInt(tempString) & mask;       
+    }
+    
 public static String intToHex (Integer decNumber, Integer sizeInBytes)
 {
 Long mask = 4294967295L; //FFFFFF
