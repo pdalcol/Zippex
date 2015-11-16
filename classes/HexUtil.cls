@@ -240,32 +240,30 @@ public class HexUtil {
         Integer poly = hexToInt('edb88320');   // reverse polynomial
         Integer b = 0;
 
-         for (Integer j = 0; j < hexString.length()/2; j++)
-         {
-           b = hexToInt(hexString.substring(j*2, j*2+2));
-           Integer temp = (crc ^ b) & hexToInt('ff');
+        for (Integer j = 0; j < hexString.length()/2; j++)
+        {
+            b = hexToInt(hexString.substring(j*2, j*2+2));
+            Integer temp = (crc ^ b) & hexToInt('ff');
 
             // read 8 bits one at a time
             for (Integer i = 0; i < 8; i++) 
             {
-                if ((temp & 1) == 1) temp = (temp >>> 1) ^ poly;
-                else                
-                     temp = (temp >>> 1);
+                if ((temp & 1) == 1) {
+                    temp = (temp >>> 1) ^ poly;
+                } else {
+                    temp = (temp >>> 1);
+                }
             }
-           crc = (crc >>> 8) ^ temp;
-          }
+            crc = (crc >>> 8) ^ temp;
+        }
 
         // flip bits
-       crc = crc ^ -1;//hexToInt('ffffffff');
+        crc = crc ^ -1;//hexToInt('ffffffff');
 
-      System.debug('CRC32 (via direct calculation) = ' + intToHex(crc,4));
-        
+        System.debug('CRC32 (via direct calculation) = ' + intToHex(crc,4));
         return crc;
 
-
     }
-
-
 
     public static Integer hexToInt (String hexString)
     {
@@ -283,13 +281,13 @@ public class HexUtil {
             returnedInteger += tempInteger * (Integer)Math.pow(16,j);
         
         }
-            
+        
         return returnedInteger;
     }
 
 
     public static Long hexToIntLittleEndian (String hexString)
-    {  
+    {
         Long mask = 4294967295L; //FFFFFF
         String tempString = '';
         
@@ -299,7 +297,7 @@ public class HexUtil {
                 tempString = tempString + hexString.substring(j-2,j-1);
                 tempString = tempString + hexString.substring(j-1,j);
             }
-        return hexToInt(tempString) & mask;       
+        return hexToInt(tempString) & mask;
     }
 
     //Int to Little Endian Hex
@@ -312,7 +310,7 @@ public class HexUtil {
         Integer byteLocation = 0;
         String tempRightDigit ='0';
         String tempLeftDigit ='0';
-        
+
         while (decimalnumber > 0)
         {
             remainder = math.mod(decimalnumber, 16);
@@ -354,8 +352,8 @@ public class HexUtil {
             if (remainder == 14) tempLeftDigit = 'e';
             if (remainder == 15) tempLeftDigit = 'f';
              
-             LEHexStringOfDecimal = LEHEXStringOfDecimal + tempLeftDigit + tempRightDigit;
-             byteLocation++;
+            LEHexStringOfDecimal = LEHEXStringOfDecimal + tempLeftDigit + tempRightDigit;
+            byteLocation++;
         }
 
         for (Integer x = byteLocation; x < sizeInBytes; x++) {
