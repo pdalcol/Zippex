@@ -234,10 +234,10 @@ public class HexUtil {
     **************************************************************************/
     public static Integer CRC32Calc_slow (Blob data) 
     {
-        Integer crc =  hexToInt('ffffffff');
+        Integer crc = -1; //hexToInt('ffffffff');
         String hexString = EncodingUtil.convertToHex(data);
         //crc  = hexToInt('ffffffff');       // initial contents of LFBSR
-        Integer poly = hexToInt('EDB88320');   // reverse polynomial
+        Integer poly = hexToInt('edb88320');   // reverse polynomial
         Integer b = 0;
 
          for (Integer j = 0; j < hexString.length()/2; j++)
@@ -256,7 +256,7 @@ public class HexUtil {
           }
 
         // flip bits
-       crc = crc ^ hexToInt('ffffffff');
+       crc = crc ^ -1;//hexToInt('ffffffff');
 
       System.debug('CRC32 (via direct calculation) = ' + intToHex(crc,4));
         
@@ -301,67 +301,67 @@ public class HexUtil {
             }
         return hexToInt(tempString) & mask;       
     }
-    
-public static String intToHex (Integer decNumber, Integer sizeInBytes)
-{
-Long mask = 4294967295L; //FFFFFF
-Long decimalNumber = decNumber & mask;
-String LEHexStringOfDecimal = '';
-Long remainder = 0;
-Integer byteLocation = 0;
-String tempRightDigit ='0';
-String tempLeftDigit ='0';
-while (decimalnumber > 0)
-{
-    remainder = math.mod(decimalnumber, 16);
-    decimalnumber = decimalnumber / 16;
-    if (remainder == 1) tempRightDigit = '1';
-    if (remainder == 2) tempRightDigit = '2';
-    if (remainder == 3) tempRightDigit = '3';
-    if (remainder == 4) tempRightDigit = '4';
-    if (remainder == 5) tempRightDigit = '5';
-    if (remainder == 6) tempRightDigit = '6';
-    if (remainder == 7) tempRightDigit = '7';
-    if (remainder == 8) tempRightDigit = '8';
-    if (remainder == 9) tempRightDigit = '9';
-    if (remainder == 10) tempRightDigit = 'a';
-    if (remainder == 11) tempRightDigit = 'b';
-    if (remainder == 12) tempRightDigit = 'c';
-    if (remainder == 13) tempRightDigit = 'd';
-    if (remainder == 14) tempRightDigit = 'e';
-    if (remainder == 15) tempRightDigit = 'f';
-    
-    if (remainder == 0)  tempRightDigit = '0';
+
+    //Int to Little Endian Hex
+    public static String intToHex (Integer decNumber, Integer sizeInBytes)
+    {
+        Long mask = 4294967295L; //FFFFFF
+        Long decimalNumber = decNumber & mask;
+        String LEHexStringOfDecimal = '';
+        Long remainder = 0;
+        Integer byteLocation = 0;
+        String tempRightDigit ='0';
+        String tempLeftDigit ='0';
+        
+        while (decimalnumber > 0)
+        {
             remainder = math.mod(decimalnumber, 16);
             decimalnumber = decimalnumber / 16;
-                if (remainder == 0) tempLeftDigit = '0';
-                if (remainder == 1) tempLeftDigit = '1';
-                if (remainder == 2) tempLeftDigit = '2';
-                if (remainder == 3) tempLeftDigit = '3';
-                if (remainder == 4) tempLeftDigit = '4';
-                if (remainder == 5) tempLeftDigit = '5';
-                if (remainder == 6) tempLeftDigit = '6';
-                if (remainder == 7) tempLeftDigit = '7';
-                if (remainder == 8) tempLeftDigit = '8';
-                if (remainder == 9) tempLeftDigit = '9';
-                if (remainder == 10) tempLeftDigit = 'a';
-                if (remainder == 11) tempLeftDigit = 'b';
-                if (remainder == 12) tempLeftDigit = 'c';
-                if (remainder == 13) tempLeftDigit = 'd';
-                if (remainder == 14) tempLeftDigit = 'e';
-                if (remainder == 15) tempLeftDigit = 'f';
-     
-     LEHexStringOfDecimal = LEHEXStringOfDecimal + tempLeftDigit + tempRightDigit;
-     byteLocation++;
-}
-for (Integer x = byteLocation; x < sizeInBytes; x++)
-    LEHexStringOfDecimal = LEHexStringOfDecimal + '00';
+            if (remainder == 1) tempRightDigit = '1';
+            if (remainder == 2) tempRightDigit = '2';
+            if (remainder == 3) tempRightDigit = '3';
+            if (remainder == 4) tempRightDigit = '4';
+            if (remainder == 5) tempRightDigit = '5';
+            if (remainder == 6) tempRightDigit = '6';
+            if (remainder == 7) tempRightDigit = '7';
+            if (remainder == 8) tempRightDigit = '8';
+            if (remainder == 9) tempRightDigit = '9';
+            if (remainder == 10) tempRightDigit = 'a';
+            if (remainder == 11) tempRightDigit = 'b';
+            if (remainder == 12) tempRightDigit = 'c';
+            if (remainder == 13) tempRightDigit = 'd';
+            if (remainder == 14) tempRightDigit = 'e';
+            if (remainder == 15) tempRightDigit = 'f';
+            
+            if (remainder == 0)  tempRightDigit = '0';
 
-return LEHexStringOfDecimal;
-}
+            remainder = math.mod(decimalnumber, 16);
+            decimalnumber = decimalnumber / 16;
+            if (remainder == 0) tempLeftDigit = '0';
+            if (remainder == 1) tempLeftDigit = '1';
+            if (remainder == 2) tempLeftDigit = '2';
+            if (remainder == 3) tempLeftDigit = '3';
+            if (remainder == 4) tempLeftDigit = '4';
+            if (remainder == 5) tempLeftDigit = '5';
+            if (remainder == 6) tempLeftDigit = '6';
+            if (remainder == 7) tempLeftDigit = '7';
+            if (remainder == 8) tempLeftDigit = '8';
+            if (remainder == 9) tempLeftDigit = '9';
+            if (remainder == 10) tempLeftDigit = 'a';
+            if (remainder == 11) tempLeftDigit = 'b';
+            if (remainder == 12) tempLeftDigit = 'c';
+            if (remainder == 13) tempLeftDigit = 'd';
+            if (remainder == 14) tempLeftDigit = 'e';
+            if (remainder == 15) tempLeftDigit = 'f';
+             
+             LEHexStringOfDecimal = LEHEXStringOfDecimal + tempLeftDigit + tempRightDigit;
+             byteLocation++;
+        }
 
+        for (Integer x = byteLocation; x < sizeInBytes; x++) {
+            LEHexStringOfDecimal = LEHexStringOfDecimal + '00';
+        }
 
-
-
-
+        return LEHexStringOfDecimal;
+    }
 }
