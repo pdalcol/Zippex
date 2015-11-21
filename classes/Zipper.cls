@@ -87,30 +87,35 @@ public class Zipper
         {
             return EncodingUtil.convertFromHex(zipFileString);
         }
-        String zipFileBuffer ='';
+        //String zipFileString ='';
         Integer zipFileSize = 0;
+
+        //Writing Local Headers and data for each file
         for (fileObject tempFileObject : zipFileMap.values())
         {
             tempFileObject.OffsetOfLH = HexUtil.intToHex(zipfileSize, 4);
-            zipFileBuffer += tempFileObject.assembleLocalFileHeader();
-            zipfileSize = zipFileBuffer.length()/2;
+            zipFileString += tempFileObject.assembleLocalFileHeader();
+            zipfileSize = zipFileString.length()/2;
             tempFileObject.compressedFileData = null;
         }
+
+        //Writing Central Directory
         offsetOfStartOfCentralDir = HexUtil.intToHex(zipfileSize,4);
         for (fileObject tempFileObject : zipFileMap.values())
         {
-            zipFileBuffer += tempFileObject.assembleCentralFileHeader();
+            zipFileString += tempFileObject.assembleCentralFileHeader();
         }
-        sizeOfCentralDir = HexUtil.intToHex(zipFileBuffer.length()/2 - zipfileSize,4);
+        sizeOfCentralDir = HexUtil.intToHex(zipFileString.length()/2 - zipfileSize,4);
         totalNumberOfEntriesInTheCentralDirOnThisDisk = HexUtil.intToHex(zipFileMap.size(),2);
         totalNumberOfEntriesCentralDir = HexUtil.intToHex(zipFileMap.size(),2);
         
-        zipFileBuffer += assembleEndOfCentralDir();
+        //Write End of Central Directory
+        zipFileString += assembleEndOfCentralDir();
         
         zipFileMap.clear();
 
-        //System.debug(zipFileBuffer);
-        return EncodingUtil.convertFromHex(zipFileBuffer);
+        //System.debug(zipFileString);
+        return EncodingUtil.convertFromHex(zipFileString);
     }
     
     public void addFileToZip (String fileName, Blob fileData, String crc32)
