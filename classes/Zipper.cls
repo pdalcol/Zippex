@@ -40,8 +40,12 @@ public class Zipper
     
     public Blob getFile(String fileName)
     {
-        fileObject tempFileObject =  zipFileMap.get(fileName);
-        tempFileObject.readLocalFileHeader(zipFileString, (Integer)HexUtil.hexToIntLittleEndian( tempFileObject.offsetOfLH));
+        fileObject tempFileObject = zipFileMap.get(fileName);
+        
+        if (tempFileObject.fileDataInZipStr) {
+            tempFileObject.readLocalFileHeader(zipFileString, (Integer)HexUtil.hexToIntLittleEndian( tempFileObject.offsetOfLH));
+        }
+
         if (tempFileObject.compressionMethod == '0000')
         {
             return EncodingUtil.convertFromHex(tempFileObject.compressedFileData);
@@ -83,10 +87,10 @@ public class Zipper
     
     public Blob getZipFile ()
     {
-        if (unZipping)
-        {
-            return EncodingUtil.convertFromHex(zipFileString);
-        }
+        //if (unZipping)
+        //{
+        //    return EncodingUtil.convertFromHex(zipFileString);
+        //}
         //String zipFileString ='';
         Integer zipFileSize = 0;
 
@@ -96,6 +100,7 @@ public class Zipper
             tempFileObject.OffsetOfLH = HexUtil.intToHex(zipfileSize, 4);
             zipFileString += tempFileObject.assembleLocalFileHeader();
             zipfileSize = zipFileString.length()/2;
+            tempFileObject.fileDataInZipStr = true;
             tempFileObject.compressedFileData = null;
         }
 
@@ -150,7 +155,8 @@ public class Zipper
         tempFileObject.fileComment = '';// (c bytes) 
     
         tempFileObject.compressedFileData = EncodingUtil.convertToHex(fileData); // (n bytes) // from the parameters passed
-        
+        tempFileObject.fileDataInZipStr = false;
+
         zipFileMap.put(fileName, tempFileObject);  //add the new subFile to the Zip List
     }
     ////////use intToHex instead?
@@ -299,10 +305,13 @@ public class Zipper
         public String fileComment = '00';// (c bytes) 
         public String compressedFileData = '00';// (n bytes)
         public Integer offsetToNextRecord = 0;  //offsetToNext Record
+        public Boolean fileDataInZipStr = false;
     
     
         // Constructor
-        public fileObject(){}
+        public fileObject(){
+            fileDataInZipStr = false;
+        }
 
         public fileObject (String zipFileString, Integer offset)
         {
@@ -334,9 +343,9 @@ public class Zipper
         theEnd = theStart + (Integer)HexUtil.hexToIntLittleEndian(fileCommentLength);
         fileComment = zipFileString.substring(theStart*2, theEnd*2);// (c bytes)        Offset 46 + fileNameLength + extraFieldLength
         offsetToNextRecord = theEnd;
+        fileDataInZipStr = true; //true beacause we are reading an existing zip file
         //System.debug(this);
         }
-        
         
         public void readLocalFileHeader (String zipFileString, Integer offset)
         {
