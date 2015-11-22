@@ -61,11 +61,9 @@ public class Zipper
             return null;
         }
     }
-    
-    
+
     // Local File Header
     private final static String LFHSignature = '504b0304';      
-    
     
     // Central Directory 
     private final static String CFHSignature = '504b0102';  // little Endian Central file header signature
@@ -102,16 +100,15 @@ public class Zipper
         //String zipFileString ='';
         Integer zipFileSize = 0;
 
-        /////// delete central directory and end of Central dir here
-        //zipFileString = zipFileString.substringBeforeLast(endCentralDirSignature);
+        /////// delete central directory and end of Central directory
         zipFileString = zipFileString.left((Integer)HexUtil.hexToIntLittleEndian(offsetOfStartOfCentralDir)*2);
 
-        //Writing Local Headers and data for each file
+        //Writing Local Headers and data for each file not already in zip
         zipfileSize = zipFileString.length()/2;
         for (FileObject tempFileObject : zipFileMap.values())
         {
             if (!tempFileObject.fileDataInZipStr) {
-                tempFileObject.OffsetOfLH = HexUtil.intToHex(zipfileSize, 4);
+                tempFileObject.offsetOfLH = HexUtil.intToHex(zipfileSize, 4);
                 zipFileString += tempFileObject.assembleLocalFileHeader();
                 zipfileSize = zipFileString.length()/2;
                 tempFileObject.fileDataInZipStr = true;
@@ -143,22 +140,15 @@ public class Zipper
         if(!zipFileMap.containsKey(fileName)) {return;}
 
         FileObject tempFileObject = zipFileMap.get(fileName);
-        //zipFileString = zipFileString.substringBeforeLast(LFHSignature); /////update this 
 
-        Integer offsetOfLH = (Integer)HexUtil.hexToIntLittleEndian(tempFileObject.offsetOfLH);
-
-        tempFileObject.readLocalFileHeader(zipFileString, offsetOfLH);
-
-        //Integer sizeOfLH = 30 + (Integer)HexUtil.hexToIntLittleEndian(tempFileObject.fileNameLength)
-        //                      + (Integer)HexUtil.hexToIntLittleEndian(tempFileObject.extraFieldLength)
-        //                      + (Integer)HexUtil.hexToIntLittleEndian(tempFileObject.compressedSize);
-        
-        System.debug('offset LH: '+offsetOfLH+' size LH xx  -- fileNameLength '+tempFileObject.fileNameLength+' extraFieldLength '+tempFileObject.extraFieldLength+' compressedSize '+tempFileObject.compressedSize);
-        System.debug('offset Next rec: '+tempFileObject.l_offsetToNextRecord);
-
-        zipFileString = zipFileString.left(offsetOfLH*2) + zipFileString.substring(tempFileObject.l_offsetToNextRecord*2); 
-
-        recalculateOffsets(offsetOfLH, offsetOfLH - tempFileObject.l_offsetToNextRecord );
+        if(tempFileObject.fileDataInZipStr) {
+            Integer offsetOfLH = (Integer)HexUtil.hexToIntLittleEndian(tempFileObject.offsetOfLH);
+            tempFileObject.readLocalFileHeader(zipFileString, offsetOfLH);
+            //System.debug('offset LH: '+offsetOfLH+' size LH xx  -- fileNameLength '+tempFileObject.fileNameLength+' extraFieldLength '+tempFileObject.extraFieldLength+' compressedSize '+tempFileObject.compressedSize);
+            //System.debug('offset Next rec: '+tempFileObject.l_offsetToNextRecord);
+            zipFileString = zipFileString.left(offsetOfLH*2) + zipFileString.substring(tempFileObject.l_offsetToNextRecord*2); 
+            recalculateOffsets(offsetOfLH, offsetOfLH - tempFileObject.l_offsetToNextRecord );
+        }
 
         zipFileMap.remove(fileName);
     }
@@ -461,6 +451,13 @@ public class Zipper
             if (String.isBlank(crc32)) {  
                 crc32 = HexUtil.intToHex(HexUtil.CRC32Table(compressedFileData), 4);// (4 bytes) 
             }
+
+            l_offsetToNextRecord = (Integer)HexUtil.hexToIntLittleEndian(offsetOfLH) 
+                                 + 30 
+                                 + (Integer)HexUtil.hexToIntLittleEndian(fileNameLength)
+                                 + (Integer)HexUtil.hexToIntLittleEndian(extraFieldLength)
+                                 + (Integer)HexUtil.hexToIntLittleEndian(compressedSize);
+
             return Zipper.LFHSignature + minExtractorVersion + GPFlagBit + compressionMethod +lastModTime + lastModDate + 
                     crc32 + compressedSize + uncompressedSize + fileNameLength + extraFieldLength + fileName + extraField +
                     compressedFileData;
