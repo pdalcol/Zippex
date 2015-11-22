@@ -2,7 +2,7 @@ public class Zipper
 {
     public static String bigZip = '504B030414000808080002266D4700000000000000000000000032000000756E7061636B616765642F74726967676572732F4D65726368616E7441646472657373547269676765722E74726967676572E5545D4BC330147DDFAFC8630BA57F407CE836101FA6D22A822F254B6EEB65310949BA29B2FF6EDAA5C5C21EEC6053304FBD5FE7F4DC1CE20CD63518B202C35EA97419E706AC7D0C6925874A194A60CB9291680D953240505A302E21216C34A70E12422BE7A7FBE2211AD73808701093CF19F1E7A627644A3A7877E49A48D80DE928BE9A757D589128B4A468E71DE96DC7D223B5274C1560B6C8C0A6A69121F5ACCCA6126A17B5E80B2A29472A5F502F140F3885A60C86B63096FAF6A4874D95E0B1FFA1896C9E2593BC68D64BDCA245251F946E0475FE6BE80BD27AF4FD31D159BBBED3351BE0E872B49B82F9DDE54A88461F93BBA27AA4D8C797113D017DE5ED486B983776D2060FB679EAEC785EDBDC7DB7CDFDEFDBE674CD97B54DF121590E1CDE74AB737878FE994FBB2B5B8EDEC9BF7B653FD1B8FF02504B070882804235390100006E060000504B030414000808080002266D470000000000000000000000003B000000756E7061636B616765642F74726967676572732F4D65726368616E7441646472657373547269676765722E747269676765722D6D6574612E786D6C4D8DCB0AC2301444F7F98A90BDB9B148114953BAF10BAAFB905E6BC03C48AEA59F6FA12E3ABB19CE7074BF860F5FB0549F6227CE52098ED1A5C9C7B9138FF17EBA8ADE303D645CC7E2E7190BDF1EB176E24D946F0035D92CEB2B1587D2A5008D522DA80B04243B59B2C230BE45DBEC9FBBC634AD541A0EC34E54B2F4AD6670E417D4F0AF4CC3416ED80F504B070812A482A28A000000B2000000504B030414000808080002266D4700000000000000000000000016000000756E7061636B616765642F7061636B6167652E786D6C4D4FCB0E823010BCF3154DEF76AB12634C29E1E2CDC4037E402D2B10ED236D63F0EF25808F3DCDECCECE6444399807796288BDB3055D334E095AED9ADEB605BDD4C7D59E96321367A5EFAA4532AA6D2C6897923F0044A73C8B37173432ED0C6C38DF01CFC160528D4A8ACA8C8C23D2CB639CF1C40D9AEB18294F1874A76CAA9A26608C75E8DB168380CFFDF761954159791CBE9A6933DBC39FBF58BAC86DCEB8800FCB042C1564F606504B07084E999336A9000000F4000000504B0102140014000808080002266D4782804235390100006E060000320000000000000000000000000000000000756E7061636B616765642F74726967676572732F4D65726368616E7441646472657373547269676765722E74726967676572504B0102140014000808080002266D4712A482A28A000000B20000003B0000000000000000000000000099010000756E7061636B616765642F74726967676572732F4D65726368616E7441646472657373547269676765722E747269676765722D6D6574612E786D6C504B0102140014000808080002266D474E999336A9000000F400000016000000000000000000000000008C020000756E7061636B616765642F7061636B6167652E786D6C504B050600000000030003000D010000790300000000'; 
     
-    private Map<String,fileObject> zipFileMap = new Map<String, fileObject>{};
+    private Map<String, FileObject> zipFileMap = new Map<String, FileObject>{};
     private Boolean unZipping = false;  //if zipping a file, false.  If UnZipping a file, true
     protected String zipFileString;  // stores the Hex version of the file blob
     
@@ -15,15 +15,19 @@ public class Zipper
         unZipping = true;
         zipFileString = EncodingUtil.convertToHex(fileData);
         Integer offsetOfEndCentralDirSignature = zipFileString.lastIndexOf(endCentralDirSignature);
+        
         Long numberOfFiles = HexUtil.hexToIntLittleEndian(zipFileString.substring(offsetOfEndCentralDirSignature+10*2,offsetOfEndCentralDirSignature+10*2+2*2));    //offset 10, 2 bytes
-        Long startOfCentralDir = HexUtil.hexToIntLittleEndian(zipFileString.substring(offsetOfEndCentralDirSignature+16*2,offsetOfEndCentralDirSignature+16*2+4*2));  //offset 16, 4 bytes
+        
+        offsetOfStartOfCentralDir = zipFileString.substring(offsetOfEndCentralDirSignature+16*2,offsetOfEndCentralDirSignature+16*2+4*2);
+        
+        Long startOfCentralDir = HexUtil.hexToIntLittleEndian(offsetOfStartOfCentralDir);  //offset 16, 4 bytes
     
         //System.debug (numberOfFiles + ',  ' + startOfCentralDir);
         Integer offset = (Integer)startOfCentralDir;
         
         for (Integer fileLoop = 0; fileLoop < numberOfFiles; fileLoop++)
         {
-            fileObject tempFile = new fileObject(zipfileString, offset);
+            FileObject tempFile = new FileObject(zipfileString, offset);
             zipFileMap.put(EncodingUtil.convertFromHex(tempFile.fileName).toString(), tempFile);
             offset = tempFile.offsetToNextRecord;
     
@@ -40,8 +44,10 @@ public class Zipper
     
     public Blob getFile(String fileName)
     {
-        fileObject tempFileObject = zipFileMap.get(fileName);
-        
+        if (!zipFileMap.containsKey(fileName)) {return null;}
+
+        FileObject tempFileObject = zipFileMap.get(fileName);
+
         if (tempFileObject.fileDataInZipStr) {
             tempFileObject.readLocalFileHeader(zipFileString, (Integer)HexUtil.hexToIntLittleEndian( tempFileObject.offsetOfLH));
         }
@@ -94,19 +100,26 @@ public class Zipper
         //String zipFileString ='';
         Integer zipFileSize = 0;
 
+        /////// delete central directory and end of Central dir here
+        //zipFileString = zipFileString.substringBeforeLast(endCentralDirSignature);
+        zipFileString = zipFileString.left((Integer)HexUtil.hexToIntLittleEndian(offsetOfStartOfCentralDir)*2);
+
         //Writing Local Headers and data for each file
-        for (fileObject tempFileObject : zipFileMap.values())
+        zipfileSize = zipFileString.length()/2;
+        for (FileObject tempFileObject : zipFileMap.values())
         {
-            tempFileObject.OffsetOfLH = HexUtil.intToHex(zipfileSize, 4);
-            zipFileString += tempFileObject.assembleLocalFileHeader();
-            zipfileSize = zipFileString.length()/2;
-            tempFileObject.fileDataInZipStr = true;
-            tempFileObject.compressedFileData = null;
+            if (!tempFileObject.fileDataInZipStr) {
+                tempFileObject.OffsetOfLH = HexUtil.intToHex(zipfileSize, 4);
+                zipFileString += tempFileObject.assembleLocalFileHeader();
+                zipfileSize = zipFileString.length()/2;
+                tempFileObject.fileDataInZipStr = true;
+                tempFileObject.compressedFileData = null;
+            }
         }
 
         //Writing Central Directory
         offsetOfStartOfCentralDir = HexUtil.intToHex(zipfileSize,4);
-        for (fileObject tempFileObject : zipFileMap.values())
+        for (FileObject tempFileObject : zipFileMap.values())
         {
             zipFileString += tempFileObject.assembleCentralFileHeader();
         }
@@ -117,15 +130,49 @@ public class Zipper
         //Write End of Central Directory
         zipFileString += assembleEndOfCentralDir();
         
-        zipFileMap.clear();
+        //zipFileMap.clear();
 
         //System.debug(zipFileString);
         return EncodingUtil.convertFromHex(zipFileString);
     }
+
+    public void removeFileFromZip(String fileName){
+
+        if(!zipFileMap.containsKey(fileName)) {return;}
+
+        FileObject tempFileObject = zipFileMap.get(fileName);
+        //zipFileString = zipFileString.substringBeforeLast(LFHSignature); /////update this 
+
+        Integer offsetOfLH = (Integer)HexUtil.hexToIntLittleEndian(tempFileObject.offsetOfLH);
+
+        //tempFileObject.readLocalFileHeader(zipFileString, offsetOfLH);
+        
+        zipFileString = zipFileString.left(offsetOfLH*2)+zipFileString.right(zipFileString.length()-tempFileObject.offsetToNextRecord*2); 
+
+        recalculateOffsets(offsetOfLH, offsetOfLH - tempFileObject.offsetToNextRecord );
+
+        zipFileMap.remove(fileName);
+    }
+
+    private void recalculateOffsets(Integer offset, Integer delta){
     
-    public void addFileToZip (String fileName, Blob fileData, String crc32)
+        for (FileObject tempFileObject : zipFileMap.values()){
+
+            if(tempFileObject.fileDataInZipStr && HexUtil.hexToIntLittleEndian(tempFileObject.offsetOfLH) > offset){
+                tempFileObject.offsetOfLH = HexUtil.intToHex((Integer)HexUtil.hexToIntLittleEndian(tempFileObject.offsetOfLH) + delta, 4);
+            }
+        }
+        //offsetOfStartOfCentralDir = HexUtil.intToHex((Integer)HexUtil.hexToIntLittleEndian(offsetOfStartOfCentralDir) + delta , 4);
+    }
+
+    public void addFileToZip(String fileName, Blob fileData, String crc32)
     {
-        fileObject tempFileObject = new fileObject();
+
+        if(zipFileMap.containsKey(fileName)){
+            removeFileFromZip(fileName);
+        }
+
+        FileObject tempFileObject = new FileObject();
         
         tempFileObject.lastModTime = HexUtil.intToHex(getCurrentTime(),2); // (2 bytes) 
         tempFileObject.lastModDate = HexUtil.intToHex(getCurrentDate(),2); // (2 bytes)
@@ -222,7 +269,7 @@ public class Zipper
         String newDataStr, oldDataStr, fileName, extraField, oldCentralDirStr, newCentralDirStr;
         Integer fileNameLength, extraFieldLength;
         prefix = EncodingUtil.convertToHex(Blob.valueOf(prefix));
-        for (fileObject tempFO : zipFileMap.values())
+        for (FileObject tempFO : zipFileMap.values())
         {
             fileName = tempFO.fileName;
             extraField = tempFO.extraField;
@@ -267,8 +314,6 @@ public class Zipper
         return zipTimeStamp;
     }
     
-    
-    
     public static Integer getCurrentDate()
     {
         Datetime d = Datetime.now();
@@ -281,7 +326,7 @@ public class Zipper
         return zipDateStamp;
     }
 
-    public class fileObject
+    public class FileObject
     {
         //All strings are hex representations in little endian format
         public String creatorVersion = '0A00'; // (2 bytes) likely Windows NT
@@ -309,11 +354,11 @@ public class Zipper
     
     
         // Constructor
-        public fileObject(){
+        public FileObject(){
             fileDataInZipStr = false;
         }
 
-        public fileObject (String zipFileString, Integer offset)
+        public FileObject (String zipFileString, Integer offset)
         {
         offset *=2;
         creatorVersion = zipFileString.substring(offset+4*2, offset+4*2 + 2*2); // (2 bytes) likely Windows NT  Offset 4
@@ -397,5 +442,5 @@ public class Zipper
                     + fileCommentLength + diskNumStart + internalFileAtt + externalFileAtt + offsetOfLH + fileName 
                     + extraField + fileComment;
         }
-    }// end of fileObject class
+    }// end of FileObject class
 }
