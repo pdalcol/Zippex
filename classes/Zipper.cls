@@ -4,7 +4,7 @@ public class Zipper
     
     private Map<String, FileObject> zipFileMap = new Map<String, FileObject>{};
     private Boolean unZipping = false;  //if zipping a file, false.  If UnZipping a file, true
-    protected String zipFileString;  // stores the Hex version of the file blob
+    protected String zipFileString = '';  // stores the Hex version of the file blob
     
     // Zipper Zip  Contructor
     public Zipper(){}
