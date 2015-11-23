@@ -205,101 +205,50 @@ public class Zipper
 
         zipFileMap.put(fileName, tempFileObject);  //add the new subFile to the Zip List
     }
-    ////////use intToHex instead?
-    //public String returnLEHexStringOfDecimal (Integer decimalNumber, Integer sizeInBytes)
-    //{
-    //    String LEHexStringOfDecimal = '';
-    //    Integer remainder = 0;
-    //    Integer byteLocation = 0;
-    //    String tempRightDigit ='0';
-    //    String tempLeftDigit ='0';
-    //    while (decimalnumber > 0)
-    //    {
-    //        remainder = math.mod(decimalnumber, 16);
-    //        decimalnumber = decimalnumber / 16;
-    //        if (remainder == 1) tempRightDigit = '1';
-    //        if (remainder == 2) tempRightDigit = '2';
-    //        if (remainder == 3) tempRightDigit = '3';
-    //        if (remainder == 4) tempRightDigit = '4';
-    //        if (remainder == 5) tempRightDigit = '5';
-    //        if (remainder == 6) tempRightDigit = '6';
-    //        if (remainder == 7) tempRightDigit = '7';
-    //        if (remainder == 8) tempRightDigit = '8';
-    //        if (remainder == 9) tempRightDigit = '9';
-    //        if (remainder == 10) tempRightDigit = 'a';
-    //        if (remainder == 11) tempRightDigit = 'b';
-    //        if (remainder == 12) tempRightDigit = 'c';
-    //        if (remainder == 13) tempRightDigit = 'd';
-    //        if (remainder == 14) tempRightDigit = 'e';
-    //        if (remainder == 15) tempRightDigit = 'f';
-            
-    //        if (remainder == 0)  tempRightDigit = '0';
-    //                remainder = math.mod(decimalnumber, 16);
-    //                decimalnumber = decimalnumber / 16;
-    //                    if (remainder == 0) tempLeftDigit = '0';
-    //                    if (remainder == 1) tempLeftDigit = '1';
-    //                    if (remainder == 2) tempLeftDigit = '2';
-    //                    if (remainder == 3) tempLeftDigit = '3';
-    //                    if (remainder == 4) tempLeftDigit = '4';
-    //                    if (remainder == 5) tempLeftDigit = '5';
-    //                    if (remainder == 6) tempLeftDigit = '6';
-    //                    if (remainder == 7) tempLeftDigit = '7';
-    //                    if (remainder == 8) tempLeftDigit = '8';
-    //                    if (remainder == 9) tempLeftDigit = '9';
-    //                    if (remainder == 10) tempLeftDigit = 'a';
-    //                    if (remainder == 11) tempLeftDigit = 'b';
-    //                    if (remainder == 12) tempLeftDigit = 'c';
-    //                    if (remainder == 13) tempLeftDigit = 'd';
-    //                    if (remainder == 14) tempLeftDigit = 'e';
-    //                    if (remainder == 15) tempLeftDigit = 'f';
-             
-    //         LEHexStringOfDecimal = LEHEXStringOfDecimal + tempLeftDigit + tempRightDigit;
-    //         byteLocation++;
-    //    }
-    //    for (Integer x = byteLocation; x < sizeInBytes; x++)
-    //        LEHexStringOfDecimal = LEHexStringOfDecimal + '00';
-        
-    //    return LEHexStringOfDecimal;
-    //}
-    
 
     public void removePrefix(String prefix)
     {
-        String newDataStr, oldDataStr, fileName, extraField, oldCentralDirStr, newCentralDirStr;
-        Integer fileNameLength, extraFieldLength;
+        String newDataStr, oldDataStr, oldFileName, oldExtraField, oldCentralDirStr, newCentralDirStr;
+        Integer newFileNameLength, newExtraFieldLength;
         prefix = EncodingUtil.convertToHex(Blob.valueOf(prefix));
-        for (FileObject tempFO : zipFileMap.values())
+        for (FileObject fileObj : zipFileMap.values())
         {
-            fileName = tempFO.fileName;
-            extraField = tempFO.extraField;
-            oldDataStr = tempFO.fileNameLength + tempFO.extraFieldLength + fileName + extraField;
- 
-            fileNameLength = (Integer)HexUtil.hexToIntLittleEndian(tempFO.fileNameLength) - prefix.length()/2;
-            extraFieldLength = (Integer)HexUtil.hexToIntLittleEndian(tempFO.extraFieldLength) + prefix.length()/2;
-            newDataStr = hexUtil.intToHex(fileNameLength,2) + hexUtil.intToHex(extraFieldLength,2);
-            newDataStr += fileName.removeStart(prefix) + extraField + hexUtil.intToHex(0,prefix.length()/2);
+            oldFileName = fileObj.fileName;
+            oldExtraField = fileObj.extraField;
 
-            oldCentralDirStr = tempFO.fileNameLength + tempFO.extraFieldLength + tempFO.fileCommentLength + 
-                tempFO.diskNumStart + tempFO.internalFileAtt + tempFO.externalFileAtt + tempFO.offsetOfLH + 
-                tempFO.fileName + tempFO.extraField;
+            newFileNameLength = (Integer)HexUtil.hexToIntLittleEndian(fileObj.fileNameLength) - prefix.length()/2;
+            newExtraFieldLength = (Integer)HexUtil.hexToIntLittleEndian(fileObj.extraFieldLength) + prefix.length()/2;
 
-            newCentralDirStr = hexUtil.intToHex(fileNameLength,2) + hexUtil.intToHex(extraFieldLength,2) + 
-                tempFO.fileCommentLength +    tempFo.diskNumStart + tempFO.internalFileAtt + 
-                tempFO.externalFileAtt + tempFO.offsetOfLH + 
-                fileName.removeStart(prefix) + extraField + hexUtil.intToHex(0,prefix.length()/2);
+            oldDataStr = fileObj.fileNameLength + fileObj.extraFieldLength + oldFileName + oldExtraField;
 
-            if(fileName.startsWith(prefix))
+            newDataStr = HexUtil.intToHex(newFileNameLength,2) + HexUtil.intToHex(newExtraFieldLength,2)
+                        + oldFileName.removeStart(prefix) + oldExtraField + HexUtil.intToHex(0,prefix.length()/2);
+            
+            oldCentralDirStr = fileObj.fileNameLength + fileObj.extraFieldLength + fileObj.fileCommentLength + 
+                fileObj.diskNumStart + fileObj.internalFileAtt + fileObj.externalFileAtt + fileObj.offsetOfLH + 
+                fileObj.fileName + fileObj.extraField;
+
+            newCentralDirStr = HexUtil.intToHex(newFileNameLength,2) + HexUtil.intToHex(newExtraFieldLength,2) + 
+                fileObj.fileCommentLength +    fileObj.diskNumStart + fileObj.internalFileAtt + 
+                fileObj.externalFileAtt + fileObj.offsetOfLH + 
+                oldFileName.removeStart(prefix) + oldExtraField + HexUtil.intToHex(0,prefix.length()/2);
+
+            if(oldFileName.startsWith(prefix))
             {
-                zipFileString = zipFileString.replace(oldDataStr,newDataStr);
+                zipFileString = zipFileString.replace(oldDataStr, newDataStr);
                 zipFileString = zipFileString.replace(oldCentralDirStr, newCentralDirStr);
                 //System.debug(oldDataStr);
                 //System.debug(newDataStr);
+                fileObj.fileName = oldFileName.removeStart(prefix);
+                fileObj.fileNameLength = HexUtil.intToHex(newFileNameLength,2);
+                fileObj.extraField = oldExtraField + HexUtil.intToHex(0,prefix.length()/2);
+                fileObj.extraFieldLength = HexUtil.intToHex(newExtraFieldLength,2);
 
+                zipFileMap.remove(EncodingUtil.convertFromHex(oldFileName).toString());
+                zipFileMap.put(EncodingUtil.convertFromHex(fileObj.fileName).toString(), fileObj);
             }
         }
-
     }
-
 
     public static Integer getCurrentTime()
     {
@@ -409,7 +358,7 @@ public class Zipper
             lastModDate = zipFileString.substring(strOffset+12*2, strOffset+12*2 + 2*2);// (2 bytes)    Offset 12
             
             System.debug('gPFlagBit '+gPFlagBit);
-            if ((hexUtil.hexToIntLittleEndian(gPFlagBit.left(2)) & 8 ) == 0) {
+            if ((HexUtil.hexToIntLittleEndian(gPFlagBit.left(2)) & 8 ) == 0) {
                 crc32 = zipFileString.substring(strOffset+14*2, strOffset+14*2 + 4*2);// (4 bytes)      Offset 14
                 compressedSize = zipFileString.substring(strOffset+18*2, strOffset+18*2 + 4*2);// (4 bytes), creates (n)     Offset 18
                 uncompressedSize = zipFileString.substring(strOffset+22*2, strOffset+22*2 + 4*2);// (4 bytes)      Offset 22
@@ -431,7 +380,7 @@ public class Zipper
             compressedFileData = zipFileString.substring(theStart*2, theEnd*2);// (c bytes)        Offset 30 + fileNameLength + extraFieldLength
             l_offsetToNextRecord = theEnd;
             
-            if ((hexUtil.hexToIntLittleEndian(gPFlagBit.left(2)) & 8 ) != 0) {
+            if ((HexUtil.hexToIntLittleEndian(gPFlagBit.left(2)) & 8 ) != 0) {
                 l_offsetToNextRecord *= 2;
                 String signature = zipFileString.substring(l_offsetToNextRecord+0*2, l_offsetToNextRecord+0*2 + 4*2);// (4 bytes)
                 if (signature != DDSignature) {l_offsetToNextRecord -= 4*2;}
