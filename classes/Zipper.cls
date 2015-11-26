@@ -216,7 +216,7 @@ public class Zipper
         }
     }
     
-    public static Integer getCurrentTime()
+    private static Integer getCurrentTime()
     {
         Datetime d = Datetime.now();
         Integer zipTimeStamp = d.hour();
@@ -228,7 +228,7 @@ public class Zipper
         return zipTimeStamp;
     }
     
-    public static Integer getCurrentDate()
+    private static Integer getCurrentDate()
     {
         Datetime d = Datetime.now();
         Integer zipDateStamp = d.year() - 1980;
@@ -263,10 +263,10 @@ public class Zipper
         public String extraField = '00';// (e bytes) 
         public String fileComment = '00';// (c bytes) 
         public String compressedFileData = '00';// (n bytes)
-        public Integer c_offsetToNextRecord = 0;  //offsetToNext Record
+
+        public Integer c_offsetToNextRecord = 0;  //offsetToNext Central Dir Record
+        public Integer l_offsetToNextRecord = 0;  //offsetToNext Local Header Record
         public Boolean fileDataInZipStr = false;
-    
-        public Integer l_offsetToNextRecord = 0;  //offsetToNext Record
 
     
         // Constructor
@@ -277,7 +277,7 @@ public class Zipper
         //Reading Central Directory File Header
         public FileObject (String zipFileString, Integer offset)
         {
-        offset *=2;
+        offset *= 2;
 
         creatorVersion = zipFileString.substring(offset+4*2, offset+4*2 + 2*2); // (2 bytes) likely Windows NT  Offset 4
         minExtractorVersion = zipFileString.substring(offset+6*2, offset+6*2 + 2*2); // (2 bytes) likely Windows NT  Offset 6
