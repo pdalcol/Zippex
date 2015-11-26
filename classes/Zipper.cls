@@ -165,7 +165,7 @@ public class Zipper
         tempFileObject.crc32 = crc32;
         tempFileObject.uncompressedSize = HexUtil.intToHex(fileData.size(), 4);// (4 bytes) 
         tempFileObject.compressedSize = tempFileObject.uncompressedSize;// (4 bytes), creates (n)    
-        tempFileObject.fileNameLength = HexUtil.intToHex(fileName.length(), 2);// (2 bytes), creates (f)
+        tempFileObject.fileNameLength = HexUtil.intToHex(EncodingUtil.convertToHex(Blob.valueOf(fileName)).length()/2, 2);//HexUtil.intToHex(fileName.length(), 2);// (2 bytes), creates (f)
         tempFileObject.extraFieldLength = '0000';// (2 bytes) , creates (e)
         tempFileObject.fileCommentLength = '0000';// (2 bytes), creates (c)
         tempFileObject.diskNumStart = '0000';// (2 bytes) 
