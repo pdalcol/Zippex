@@ -323,7 +323,7 @@ public class Zipper
             lastModTime = zipFileString.substring(strOffset+10*2, strOffset+10*2 + 2*2);// (2 bytes)   Offset 10
             lastModDate = zipFileString.substring(strOffset+12*2, strOffset+12*2 + 2*2);// (2 bytes)    Offset 12
             
-            System.debug('gPFlagBit '+gPFlagBit);
+            //System.debug('gPFlagBit '+gPFlagBit);
             if ((HexUtil.hexToIntLittleEndian(gPFlagBit.left(2)) & 8 ) == 0) {
                 crc32 = zipFileString.substring(strOffset+14*2, strOffset+14*2 + 4*2);// (4 bytes)      Offset 14
                 compressedSize = zipFileString.substring(strOffset+18*2, strOffset+18*2 + 4*2);// (4 bytes), creates (n)     Offset 18
@@ -356,9 +356,7 @@ public class Zipper
                 l_offsetToNextRecord /= 2;
                 l_offsetToNextRecord += 16; 
             }
-
-            System.debug('local file header ' + this);
-        
+            //System.debug('local file header ' + this);
         }
 
         public String assembleLocalFileHeader()
