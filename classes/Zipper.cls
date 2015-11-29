@@ -47,8 +47,16 @@ public class Zipper
         {
             return EncodingUtil.convertFromHex(tempFileObject.compressedFileData);
         }
+        else if (tempFileObject.compressionMethod == '0800') //DEFLATED
+        {
+            String dest='';
+            //source='CB48CD29C840C25C00';//'F3C8E40200';//
+            //Integer destlen = 17 ,srclen = source.length()/2;
+            return EncodingUtil.convertFromHex((new Puff()).puff(dest, (Integer)HexUtil.hexToIntLittleEndian(tempFileObject.uncompressedSize), 
+                            tempFileObject.compressedFileData, (Integer)HexUtil.hexToIntLittleEndian(tempFileObject.compressedSize)));
+        }
         else {
-            System.assert(false,'Unsupported compression method: ' + tempFileObject.compressionMethod);
+            //System.assert(false,'Unsupported compression method: ' + tempFileObject.compressionMethod);
             return null;
         }
     }
