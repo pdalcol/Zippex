@@ -150,16 +150,20 @@ public class Puff {
     public Integer bits(State s, Integer need)
     {
         Long val;           /* bit accumulator (can use up to 20 bits) */
+        Integer incnt2;
         ///* load at least need bits into val */
         val = s.bitbuf;
         while (s.bitcnt < need) {
              //System.assert (s.incnt <= s.inlen, 'out of input');
         
             //val |= (long)(s->in[s->incnt++]) << s->bitcnt;  /* load eight bits */
-
+            incnt2 = s.incnt++ *2;
             //val |= HexUtil.hexToInt(s.inStr.mid(s.incnt++ *2, 2)) << s.bitcnt;/////this is really slow
-            val |= hexToLong(s.inStr.mid(s.incnt++ *2, 2)) << s.bitcnt;
-            
+            //val |= hexToLong(s.inStr.mid(s.incnt++ *2, 2)) << s.bitcnt;
+            val |= (((s.inStr.charAt(incnt2) & 15)+(s.inStr.charAt(incnt2)>>>6)*9) * 16
+                  + (s.inStr.charAt(incnt2+1) & 15)+(s.inStr.charAt(incnt2+1)>>>6) * 9) << s.bitcnt;
+            //s.incnt++;
+
             s.bitcnt += 8;
         }
 
@@ -167,7 +171,7 @@ public class Puff {
         s.bitbuf = (Integer)(val >> need);
         s.bitcnt -= need;
 
-        System.debug('reading '+need+' bit(s) result: '+(Integer)(val & ((1L << need) - 1)));
+        //System.debug('reading '+need+' bit(s) result: '+(Integer)(val & ((1L << need) - 1)));
         ///* return need bits, zeroing the bits above that */
         return (Integer)(val & ((1L << need) - 1));
     }
@@ -175,7 +179,7 @@ public class Puff {
     Long hexToLong (String hexStr){
         //Integer[] intArr = hexStr.getChars();
 
-        if (String.isEmpty(hexStr)) return 0;
+        //if (String.isEmpty(hexStr)) return 0;
         //if (intArr.size()==0) return 0;
 
         return ((hexStr.charAt(0) & 15)+(hexStr.charAt(0)>>>6)*9) * 16

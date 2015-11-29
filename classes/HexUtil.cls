@@ -265,28 +265,33 @@ public class HexUtil {
 
     }
 
-    public static Integer hexToInt (String hexString)
-    {
-        Map<String,Integer> hexMap = new Map<String,Integer>
-        {
-        '0'=>0,'1'=>1,'2'=>2,'3'=>3,'4'=>4,'5'=>5,'6'=>6,'7'=>7,'8'=>8,'9'=>9,'a'=>10,
-        'b'=>11,'c'=>12,'d'=>13,'e'=>14,'f'=>15,'A'=>10,'B'=>11,'C'=>12,'D'=>13,'E'=>14,'F'=>15
-        };
-        
-        Integer tempInteger = 0;
-        Integer returnedInteger = 0;
-        for (Integer j = 0; j < hexString.length(); j++)
-        {
-            tempInteger = hexMap.get(hexString.substring(hexString.length()-(j+1), hexString.length()-j));
-            returnedInteger += tempInteger * (Integer)Math.pow(16,j);
-        
-        }
-        
-        return returnedInteger;
+    public static Integer hexToInt(String hexStr){
+        return ((hexStr.charAt(0) & 15)+(hexStr.charAt(0)>>>6)*9) * 16
+              + (hexStr.charAt(1) & 15)+(hexStr.charAt(1)>>>6) * 9;
     }
 
+    //public static Integer hexToInt (String hexString)
+    //{
+    //    Map<String,Integer> hexMap = new Map<String,Integer>
+    //    {
+    //    '0'=>0,'1'=>1,'2'=>2,'3'=>3,'4'=>4,'5'=>5,'6'=>6,'7'=>7,'8'=>8,'9'=>9,'a'=>10,
+    //    'b'=>11,'c'=>12,'d'=>13,'e'=>14,'f'=>15,'A'=>10,'B'=>11,'C'=>12,'D'=>13,'E'=>14,'F'=>15
+    //    };
+        
+    //    Integer tempInteger = 0;
+    //    Integer returnedInteger = 0;
+    //    for (Integer j = 0; j < hexString.length(); j++)
+    //    {
+    //        tempInteger = hexMap.get(hexString.substring(hexString.length()-(j+1), hexString.length()-j));
+    //        returnedInteger += tempInteger * (Integer)Math.pow(16,j);
+        
+    //    }
+        
+    //    return returnedInteger;
+    //}
 
-    public static Long hexToIntLittleEndian (String hexString)
+
+    public static Long hexToIntLittleEndian(String hexString)
     {
         Long mask = 4294967295L; //FFFFFF
         String tempString = '';
