@@ -85,7 +85,7 @@ public class HexUtil {
         {
      
             b = ((intArr[i] & 15)+(intArr[i]>>>6)*9) * 16
-              + (intArr[i+1] & 15)+(intArr[i+1]>>>6) * 9;
+              | (intArr[i+1] & 15)+(intArr[i+1]>>>6) * 9;
             crc = (crc >>> 8) ^ table[(crc ^ b) & 255];
 
         }
@@ -116,7 +116,7 @@ public class HexUtil {
         {
      
             b = ((hexStr.charAt(i) & 15)+(hexStr.charAt(i)>>>6)*9) * 16
-              + (hexStr.charAt(i+1) & 15)+(hexStr.charAt(i+1)>>>6) * 9;
+              | (hexStr.charAt(i+1) & 15)+(hexStr.charAt(i+1)>>>6) * 9;
             crc = (crc >>> 8) ^ table[(crc ^ b) & 255];
 
         }
@@ -147,7 +147,7 @@ public class HexUtil {
         {
      
             b = ((fObj.fileData.charAt(i) & 15)+(fObj.fileData.charAt(i)>>>6)*9) * 16
-              + (fObj.fileData.charAt(i+1) & 15)+(fObj.fileData.charAt(i+1)>>>6) * 9;
+              | (fObj.fileData.charAt(i+1) & 15)+(fObj.fileData.charAt(i+1)>>>6) * 9;
             crc = (crc >>> 8) ^ table[(crc ^ b) & 255];
 
         }
@@ -266,8 +266,12 @@ public class HexUtil {
     }
 
     public static Integer hexToInt(String hexStr){
-        return ((hexStr.charAt(0) & 15)+(hexStr.charAt(0)>>>6)*9) * 16
-              + (hexStr.charAt(1) & 15)+(hexStr.charAt(1)>>>6) * 9;
+        Integer result = 0;
+
+        for (Integer j = 0; j < hexStr.length(); j++){
+            result |= (((hexStr.charAt(j) & 15)+(hexStr.charAt(j)>>>6)*9)) << (4*(hexStr.length()-j-1));
+        }
+        return result;
     }
 
     //public static Integer hexToInt (String hexString)
@@ -289,7 +293,6 @@ public class HexUtil {
         
     //    return returnedInteger;
     //}
-
 
     public static Long hexToIntLittleEndian(String hexString)
     {

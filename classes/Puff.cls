@@ -161,7 +161,8 @@ public class Puff {
             //val |= HexUtil.hexToInt(s.inStr.mid(s.incnt++ *2, 2)) << s.bitcnt;/////this is really slow
             //val |= hexToLong(s.inStr.mid(s.incnt++ *2, 2)) << s.bitcnt;
             val |= (((s.inStr.charAt(incnt2) & 15)+(s.inStr.charAt(incnt2)>>>6)*9) * 16
-                  + (s.inStr.charAt(incnt2+1) & 15)+(s.inStr.charAt(incnt2+1)>>>6) * 9) << s.bitcnt;
+                | (s.inStr.charAt(incnt2+1) & 15)+(s.inStr.charAt(incnt2+1)>>>6) * 9) << s.bitcnt;
+            
             //s.incnt++;
 
             s.bitcnt += 8;
@@ -189,16 +190,6 @@ public class Puff {
         //      + (intArr[1] & 15)+(intArr[1]>>>6) * 9;
     }
 
-    //public static Long readByte(String str, Integer cnt){
-    //    Long reversed=0, num = HexUtil.hexToInt(str.mid(cnt*2, 2));
-        
-    //    for (Integer i=0; i<8; i++){
-    //        reversed <<= 1;
-    //        reversed |= num & 1;
-    //        num >>= 1;
-    //    }
-    //    return reversed;
-    //}
     /*
      * Process a stored block.
      *
@@ -218,38 +209,42 @@ public class Puff {
      */
     private Integer stored(State s)
     {
-        System.assert(false, 'called stored()');
+        System.debug('called stored()');
 
-    //    unsigned len;       /* length of stored block */
+        Integer len;       /* length of stored block */
 
-    //    /* discard leftover bits from current byte (assumes s->bitcnt < 8) */
-    //    s->bitbuf = 0;
-    //    s->bitcnt = 0;
+        /* discard leftover bits from current byte (assumes s->bitcnt < 8) */
+        s.bitbuf = 0;
+        s.bitcnt = 0;
 
-    //    /* get length and check against its one's complement */
-    //    if (s->incnt + 4 > s->inlen)
-    //        return 2;                               /* not enough input */
-    //    len = s->in[s->incnt++];
-    //    len |= s->in[s->incnt++] << 8;
-    //    if (s->in[s->incnt++] != (~len & 0xff) ||
-    //        s->in[s->incnt++] != ((~len >> 8) & 0xff))
-    //        return -2;                               didn't match complement! 
+        /* get length and check against its one's complement */
+        if (s.incnt + 4 > s.inlen)
+            return 2;                               /* not enough input */
+        len = (Integer)hexToLong(s.inStr.mid(s.incnt++ *2, 2));
+        len |= (Integer)hexToLong(s.inStr.mid(s.incnt++ *2, 2)) << 8;
+        //if ((Integer)hexToLong(s.inStr.mid(s.incnt++ *2, 2)) != (~len & 255) ||
+        //    (Integer)hexToLong(s.inStr.mid(s.incnt++ *2, 2)) != ((~len >> 8) & 255))
+        //    return -2;                              // didn't match complement! 
+        s.incnt++;
+        s.incnt++;
+        
+        /* copy len bytes from in to out */
+        if (s.incnt + len > s.inlen)
+            return 2;                               /* not enough input */
+        if (s.out != null) {
+            if (s.outcnt + len > s.outlen)
+                return 1;                           /* not enough output space */
+            while (len-- != 0)
+                s.out += s.inStr.mid(s.incnt++ *2, 2);
+                s.outcnt++;
+                //s.out[s.outcnt++] = s.inStr[s.incnt++];
+        }
+        else {                                      /* just scanning */
+            s.outcnt += len;
+            s.incnt += len;
+        }
 
-    //    /* copy len bytes from in to out */
-    //    if (s->incnt + len > s->inlen)
-    //        return 2;                               /* not enough input */
-    //    if (s->out != NIL) {
-    //        if (s->outcnt + len > s->outlen)
-    //            return 1;                           /* not enough output space */
-    //        while (len--)
-    //            s->out[s->outcnt++] = s->in[s->incnt++];
-    //    }
-    //    else {                                      /* just scanning */
-    //        s->outcnt += len;
-    //        s->incnt += len;
-    //    }
-
-    //    /* done with a valid stored block */
+        /* done with a valid stored block */
         return 0;
     }
 
@@ -289,9 +284,9 @@ public class Puff {
      *   in the deflate format.  See the format notes for fixed() and dynamic().
      */
     //#ifdef SLOW
-    private Integer decode(State s, Huffman h)
+    private Integer decodeSlow(State s, Huffman h) //Slow
     {
-        System.debug('called decode()');
+        System.debug('called decode slow()');
 
         Integer len;            /* current number of bits in code */
         Integer code;           /* len bits being decoded */
@@ -319,47 +314,51 @@ public class Puff {
      * a few percent larger.
      */
     //#else /* !SLOW */
-    public Integer decodeFast(State s, Huffman h)
+    public Integer decode(State s, Huffman h) //Fast
     {
-        //Integer len;            /* current number of bits in code */
-        //Integer code;           /* len bits being decoded */
-        //Integer first;          /* first code of length len */
-        //Integer count;          /* number of codes of length len */
-        //Integer index;          /* index of first code of length len in symbol table */
-        //Integer bitbuf;         /* bits from stream */
-        //Integer left;           /* bits left in next or left to process */
-        //Integer[] next;        /* next number of codes */
+        System.debug('called decode fast()');
 
-        //bitbuf = s->bitbuf;
-        //left = s->bitcnt;
-        //code = first = index = 0;
-        //len = 1;
-        //next = h->count + 1;
-        //while (1) {
-        //    while (left--) {
-        //        code |= bitbuf & 1;
-        //        bitbuf >>= 1;
-        //        count = *next++;
-        //        if (code - count < first) { /* if length len, return symbol */
-        //            s->bitbuf = bitbuf;
-        //            s->bitcnt = (s->bitcnt - len) & 7;
-        //            return h->symbol[index + (code - first)];
-        //        }
-        //        index += count;             /* else update for next length */
-        //        first += count;
-        //        first <<= 1;
-        //        code <<= 1;
-        //        len++;
-        //    }
-        //    left = (MAXBITS+1) - len;
-        //    if (left == 0)
-        //        break;
-        //    if (s->incnt == s->inlen)
-        //        longjmp(s->env, 1);         /* out of input */
-        //    bitbuf = s->in[s->incnt++];
-        //    if (left > 8)
-        //        left = 8;
-        //}
+        Integer len;            /* current number of bits in code */
+        Integer code;           /* len bits being decoded */
+        Integer first;          /* first code of length len */
+        Integer count;          /* number of codes of length len */
+        Integer index;          /* index of first code of length len in symbol table */
+        Integer bitbuf;         /* bits from stream */
+        Integer left;           /* bits left in next or left to process */
+        Integer[] next;        /* next number of codes */
+
+        bitbuf = s.bitbuf;
+        left = s.bitcnt;
+        code = first = index = 0;
+        len = 1;
+        next = h.count;
+        while (true) {
+            while (left-- != 0) {
+                code |= bitbuf & 1;
+                bitbuf >>= 1;
+                count = next[len];
+                if (code - count < first) { /* if length len, return symbol */
+                    s.bitbuf = bitbuf;
+                    s.bitcnt = (s.bitcnt - len) & 7;
+                    return h.symbol[index + (code - first)];
+                }
+                index += count;             /* else update for next length */
+                first += count;
+                first <<= 1;
+                code <<= 1;
+                len++;
+            }
+            left = (MAXBITS+1) - len;
+            if (left == 0)
+                break;
+            //if (s.incnt == s.inlen)
+            //    System.assert(false,'out of input');
+                //longjmp(s.env, 1);         /* out of input */
+            //bitbuf = s.inStr[s.incnt++];
+            bitbuf = (Integer)hexToLong(s.inStr.mid(s.incnt++ *2, 2));
+            if (left > 8)
+                left = 8;
+        }
         return -10;                         /* ran out of codes */
     }
     //#endif /* SLOW */
@@ -883,7 +882,7 @@ public class Puff {
     //@future
     public static void test (){
 
-        String dest='', source='CB48CD29C840C25C00';//'F3C8E40200';//
+        String dest='', source='01050099996562616670';//'F3C8E40200';//CB48CD29C840C25C00
         Integer destlen = 17 ,srclen = source.length()/2;
         (new Puff()).puff(dest,destlen,source,srclen);
     }
