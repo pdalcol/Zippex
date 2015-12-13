@@ -32,7 +32,40 @@ public class Zipper
     {
         return zipFileMap.keySet();
     }
-    
+    public static void unzipAttachment(Id srcAttId, Id destObjId, String[] fileNames, Boolean async){
+        Map<String,Object> params = new Map<String,Object>();
+        params.put('srcAttId', srcAttId);
+        params.put('destObjId', destObjId);
+        params.put('fileNames', fileNames);
+        //params.put('async', async);
+
+        unzipAsync(JSON.serialize(params));
+    }
+
+    @future
+    private static void unzipAsync(String paramsStr){
+        Map<String,Object> params = (Map<String,Object>) JSON.deserializeUntyped(paramsStr);
+        Attachment src = [SELECT Id, ParentId, Name, Body FROM Attachment WHERE Id=:(Id)params.get('srcAttId')];
+        Attachment[] Atts = new List<Attachment>();
+
+        Zipper myZipper = new Zipper(src.Body);
+
+        if (params.get('fileNames') == null) {
+            params.put('fileNames', new List<String>(myZipper.getFileNames()));
+        }
+
+        for (Object fileName : (Object[])params.get('fileNames')) {
+            Atts.add( new Attachment (ParentId = (String)params.get('destObjId'),
+                                      Name = (String)fileName, 
+                                      Body = myZipper.getFile((String)fileName)));
+            //if (Limits.getHeapSize() >= .2 * Limits.getLimitHeapSize()){
+                insert Atts;
+                Atts.clear();
+            //}
+        }
+        insert Atts;
+    }
+
     public Blob getFile(String fileName)
     {
         if (!zipFileMap.containsKey(fileName)) {return null;}
@@ -49,11 +82,15 @@ public class Zipper
         }
         else if (tempFileObject.compressionMethod == '0800') //DEFLATED
         {
-            String dest='';
+            //String dest='';
             //source='CB48CD29C840C25C00';//'F3C8E40200';//
             //Integer destlen = 17 ,srclen = source.length()/2;
-            return EncodingUtil.convertFromHex((new Puff()).puff(dest, (Integer)HexUtil.hexToIntLittleEndian(tempFileObject.uncompressedSize), 
-                            tempFileObject.compressedFileData, (Integer)HexUtil.hexToIntLittleEndian(tempFileObject.compressedSize)));
+
+            //(new Puff(source, srclen, destlen)).inflate();
+
+            return EncodingUtil.convertFromHex(new Puff(tempFileObject.compressedFileData,
+                             (Integer)HexUtil.hexToIntLittleEndian(tempFileObject.compressedSize),
+                             (Integer)HexUtil.hexToIntLittleEndian(tempFileObject.uncompressedSize)).inflate());
         }
         else {
             //System.assert(false,'Unsupported compression method: ' + tempFileObject.compressionMethod);
@@ -79,7 +116,7 @@ public class Zipper
     private String sizeOfCentralDir  = '00000000'; //(4 bytes)
     private String offsetOfStartOfCentralDir = '00000000'; //(4 bytes)
     private final String zipfileCommentLength = '0000';  //(this is c), (2 bytes)
-    private final String zipfileComment = '00'; // (c bytes)
+    private final String zipfileComment = ''; // (c bytes)
     
     private String assembleEndOfCentralDir ()
     {

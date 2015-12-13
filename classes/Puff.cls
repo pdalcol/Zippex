@@ -229,20 +229,21 @@ public class Puff {
         s.incnt++;
         
         /* copy len bytes from in to out */
-        if (s.incnt + len > s.inlen)
-            return 2;                               /* not enough input */
-        if (s.out != null) {
-            if (s.outcnt + len > s.outlen)
-                return 1;                           /* not enough output space */
-            while (len-- != 0)
+        //if (s.incnt + len > s.inlen)
+        //    return 2;                               /* not enough input */
+        //if (s.out != null) {
+            //if (s.outcnt + len > s.outlen)
+            //    return 1;                           /* not enough output space */
+            while (len-- != 0) {
                 s.out += s.inStr.mid(s.incnt++ *2, 2);
                 s.outcnt++;
                 //s.out[s.outcnt++] = s.inStr[s.incnt++];
-        }
-        else {                                      /* just scanning */
-            s.outcnt += len;
-            s.incnt += len;
-        }
+            }
+        //}
+        //else {                                       //just scanning 
+        //    s.outcnt += len;
+        //    s.incnt += len;
+        //}
 
         /* done with a valid stored block */
         return 0;
@@ -286,7 +287,7 @@ public class Puff {
     //#ifdef SLOW
     private Integer decodeSlow(State s, Huffman h) //Slow
     {
-        System.debug('called decode slow()');
+        //System.debug('called decode slow()');
 
         Integer len;            /* current number of bits in code */
         Integer code;           /* len bits being decoded */
@@ -316,7 +317,7 @@ public class Puff {
     //#else /* !SLOW */
     public Integer decode(State s, Huffman h) //Fast
     {
-        System.debug('called decode fast()');
+        //System.debug('called decode fast()');
 
         Integer len;            /* current number of bits in code */
         Integer code;           /* len bits being decoded */
@@ -359,6 +360,7 @@ public class Puff {
             if (left > 8)
                 left = 8;
         }
+        System.assert(false, 'Ran out of codes while decompressing.');
         return -10;                         /* ran out of codes */
     }
     //#endif /* SLOW */
@@ -536,25 +538,25 @@ public class Puff {
                 return symbol;              /* invalid symbol */
             if (symbol < 256) {             /* literal: symbol is the byte */
                 /* write out the literal */
-                if (s.out != null) {
-                    if (s.outcnt == s.outlen)
-                        return 100;
+                //if (s.out != null) {
+                    //if (s.outcnt == s.outlen)
+                    //    return 100;
                     //s.out[s.outcnt] = symbol; ////
                     s.out += HexUtil.intToHex(symbol, 1);
-                }
+                //}
                 s.outcnt++;
             }
             else if (symbol > 256) {        /* length */
                 /* get and compute length */
                 symbol -= 257;
-                if (symbol >= 29)
-                    return -10;             /* invalid fixed code */
+                //if (symbol >= 29)
+                //    return -10;             /* invalid fixed code */
                 len = lens[symbol] + bits(s, lext[symbol]);
 
                 /* get and check distance */
                 symbol = decode(s, distcode);
-                if (symbol < 0)
-                    return symbol;          /* invalid symbol */
+                //if (symbol < 0)
+                //    return symbol;          /* invalid symbol */
                 dist = dists[symbol] + bits(s, dext[symbol]);
     //#ifndef INFLATE_ALLOW_INVALID_DISTANCE_TOOFAR_ARRR
     //            if (dist > s->outcnt)
@@ -562,9 +564,9 @@ public class Puff {
     //#endif
 
                 /* copy length bytes from distance bytes back */
-                if (s.out != null) {
-                    if (s.outcnt + len > s.outlen)
-                        return 101;
+                //if (s.out != null) {
+                    //if (s.outcnt + len > s.outlen)
+                    //    return 101;
                     while (len-- != 0) {
                         //s.out[s.outcnt] = //////
                         s.out +=
@@ -575,9 +577,9 @@ public class Puff {
                                 s.out.mid((s.outcnt - dist)*2, 2);//s.out[s.outcnt - dist];
                         s.outcnt++;
                     }
-                }
-                else
-                    s.outcnt += len;
+                //}
+                //else
+                //    s.outcnt += len;
             }
         } while (symbol != 256);            /* end of block symbol */
 
@@ -882,37 +884,53 @@ public class Puff {
     //@future
     public static void test (){
 
-        String dest='', source='01050099996562616670';//'F3C8E40200';//CB48CD29C840C25C00
+        String source='CB48CD29C840C25C00';//'F3C8E40200';//CB48CD29C840C25C00//01050099996562616670
         Integer destlen = 17 ,srclen = source.length()/2;
-        (new Puff()).puff(dest,destlen,source,srclen);
+        (new Puff(source, srclen, destlen)).inflate();
     }
 
-    public String puff(String dest, Integer destlen, String source, Integer sourcelen)
-    {
-        System.debug('called puff()');
-
-        State s = new State();             /* input/output state */
-        Integer last, type;             /* block information */
-        Integer err;                    /* return value */
-
+    public Puff(String source, Integer srclen, Integer destlen){
         /* initialize output state */
-        s.out = dest;
+        s.out = '';
         s.outlen = destlen;                /* ignored if dest is NIL */
         s.outcnt = 0;
 
         /* initialize input state */
         s.inStr = source;
-        s.inlen = sourcelen;
+        s.inlen = srclen;
         s.incnt = 0;
         s.bitbuf = 0;
         s.bitcnt = 0;
+    }
+
+    State s = new State();             /* input/output state */
+    public String inflate()
+    {
+        System.debug('called puff()');
+        Integer blockNum = 0;
+        Integer last, type;             /* block information */
+        Integer err;                    /* return value */
+
+        /* initialize output state */
+        //s.out = '';
+        //s.outlen = destlen;                /* ignored if dest is NIL */
+        //s.outcnt = 0;
+
+        // initialize input state 
+        //s.inStr = source;
+        //s.inlen = sourcelen;
+        //s.incnt = 0;
+        //s.bitbuf = 0;
+        //s.bitcnt = 0;
 
         /* return if bits() or decode() tries to read past available input */
-        if (s.env != 0)              //if came back here via longjmp() 
-            err = 2;                        /* then skip do-loop, return error */
-        else {
+        //if (s.env != 0)              //if came back here via longjmp() 
+        //    err = 2;                        /* then skip do-loop, return error */
+        //else {
             /* process blocks until last block or error */
             do {
+                //System.debug('Block: '+blockNum++ +' CPU used: '+Limits.getCpuTime());
+                //if (Limits.getCpuTime()>=Limits.getLimitCpuTime()) {break;err=999;}
                 last = bits(s, 1);         /* one if last block */
                 type = bits(s, 2);         /* block type 0..3 */
                 err = type == 0 ?
@@ -924,19 +942,20 @@ public class Puff {
                                 -1));       /* type == 3, invalid */
                 if (err != 0)
                     break;                  /* return with error */
+                //System.assert(Limits.getCpuTime()<=.9*Limits.getLimitCpuTime());
             } while (last == 0);
-        }
+        //}
 
         /* update the lengths and return */
-        if (err <= 0) {
-            destlen = s.outcnt;
-            sourcelen = s.incnt;
-        }
+        //if (err <= 0) {
+        //    destlen = s.outcnt;
+        //    sourcelen = s.incnt;
+        //}
         
         System.debug('finished with code: '+err);
-        System.debug('out: '+ s.out); 
+        //System.debug('out: '+ s.out); 
 
-        System.debug('out: '+ EncodingUtil.convertFromHex(s.out).toString()); 
+        //System.debug('out: '+ EncodingUtil.convertFromHex(s.out).toString()); 
         
         return s.out;
     }
