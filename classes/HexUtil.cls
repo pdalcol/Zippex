@@ -296,7 +296,7 @@ public class HexUtil {
 
     public static Long hexToIntLittleEndian(String hexString)
     {
-        Long mask = 4294967295L; //FFFFFF
+        Long mask = 4294967295L; //FFFFFFFF
         String tempString = '';
         
         for (Integer j = hexString.length(); j > 0; j=j-2)
@@ -311,7 +311,7 @@ public class HexUtil {
     //Int to Little Endian Hex
     public static String intToHex (Integer decNumber, Integer sizeInBytes)
     {
-        Long mask = 4294967295L; //FFFFFF
+        Long mask = 4294967295L; //FFFFFFFF
         Long decimalNumber = decNumber & mask;
         String LEHexStringOfDecimal = '';
         Long remainder = 0;
@@ -319,7 +319,7 @@ public class HexUtil {
         String tempRightDigit ='0';
         String tempLeftDigit ='0';
 
-        while (decimalnumber > 0)
+        while (decimalnumber > 0 && LEHexStringOfDecimal.length()<sizeInBytes*2)
         {
             remainder = math.mod(decimalnumber, 16);
             decimalnumber = decimalnumber / 16;
@@ -364,10 +364,11 @@ public class HexUtil {
             byteLocation++;
         }
 
-        for (Integer x = byteLocation; x < sizeInBytes; x++) {
-            LEHexStringOfDecimal = LEHexStringOfDecimal + '00';
-            //////LEHexStringOfDecimal += '00'.repeat(sizeInBytes-byteLocation);
-        }
+        //for (Integer x = byteLocation; x < sizeInBytes; x++) {
+        //    LEHexStringOfDecimal = LEHexStringOfDecimal + '00';
+        //}
+
+        LEHexStringOfDecimal += '00'.repeat(sizeInBytes-byteLocation);
 
         return LEHexStringOfDecimal;
     }
