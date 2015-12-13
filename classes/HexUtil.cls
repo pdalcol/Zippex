@@ -93,7 +93,7 @@ public class HexUtil {
         // flip bits
         crc = crc ^ -1; //hexToInt('ffffffff');
 
-        System.debug('CRC32 - table = ' + intToHex(crc,4));// + '    ' + (crc & 4294967295L));
+        //System.debug('CRC32 - table = ' + intToHex(crc,4));// + '    ' + (crc & 4294967295L));
         return crc;
     }
 
@@ -124,7 +124,7 @@ public class HexUtil {
         // flip bits
         crc = crc ^ -1; //hexToInt('ffffffff');
 
-        System.debug('CRC32 - table = ' + intToHex(crc,4));// + '    ' + (crc & 4294967295L));
+        //System.debug('CRC32 - table = ' + intToHex(crc,4));// + '    ' + (crc & 4294967295L));
         return crc;
     }
 /*
@@ -366,6 +366,7 @@ public class HexUtil {
 
         for (Integer x = byteLocation; x < sizeInBytes; x++) {
             LEHexStringOfDecimal = LEHexStringOfDecimal + '00';
+            //////LEHexStringOfDecimal += '00'.repeat(sizeInBytes-byteLocation);
         }
 
         return LEHexStringOfDecimal;

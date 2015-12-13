@@ -96,7 +96,7 @@ public class Puff {
     public final Integer FIXLCODES = 288;           /* number of fixed literal/length codes */
 
     public Integer[] getIntArray(Integer size){
-        System.debug('Called getintArray. Size: '+size);
+        //System.debug('Called getintArray. Size: '+size);
 
         return (Integer[]) JSON.deserialize('['+'0'.repeat(',',size) +']', Integer[].class);
 
@@ -209,7 +209,7 @@ public class Puff {
      */
     private Integer stored(State s)
     {
-        System.debug('called stored()');
+        //System.debug('called stored()');
 
         Integer len;       /* length of stored block */
 
@@ -399,7 +399,7 @@ public class Puff {
      */
     private Integer construct(Huffman h, Integer[] length, Integer n)
     {
-        System.debug('called construct()');
+        //System.debug('called construct()');
 
         Integer symbol;         /* current symbol when stepping through length[] */
         Integer len;            /* current length when stepping through h->count[] */
@@ -524,7 +524,7 @@ public class Puff {
                     Huffman lencode,
                     Huffman distcode)
     {
-        System.debug('called codes()');
+        //System.debug('called codes()');
 
         Integer symbol;         /* decoded symbol */
         Integer len;            /* length for copy */
@@ -619,7 +619,7 @@ public class Puff {
 
     private integer fixed(State s)
     {
-        System.debug('called fixed()');
+        //System.debug('called fixed()');
 
         /* build fixed huffman tables if first call (may not be thread safe) */
         if (virgin == 1) {
@@ -745,7 +745,7 @@ public class Puff {
      */
     private Integer dynamic(State s)
     {
-        System.debug('called dynamic()');
+        //System.debug('called dynamic()');
 
         Integer nlen, ndist, ncode;             /* number of lengths in descriptor */
         Integer index;                          /* index of lengths[] */
@@ -906,7 +906,7 @@ public class Puff {
     State s = new State();             /* input/output state */
     public String inflate()
     {
-        System.debug('called puff()');
+        //System.debug('called puff()');
         Integer blockNum = 0;
         Integer last, type;             /* block information */
         Integer err;                    /* return value */
@@ -952,7 +952,8 @@ public class Puff {
         //    sourcelen = s.incnt;
         //}
         
-        System.debug('finished with code: '+err);
+        System.assert(err == 0);
+        //System.debug('finished with code: '+err);
         //System.debug('out: '+ s.out); 
 
         //System.debug('out: '+ EncodingUtil.convertFromHex(s.out).toString()); 
