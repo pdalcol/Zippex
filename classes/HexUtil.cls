@@ -32,7 +32,7 @@
 
 public class HexUtil { 
 
-    private static Integer[] table = new List<Integer> { 
+    private static final Integer[] table = new List<Integer> { 
             0, 1996959894, -301047508, -1727442502, 124634137, 1886057615, -379345611, -1637575261,
             249268274, 2044508324, -522852066, -1747789432, 162941995, 2125561021, -407360249, -1866523247, 
             498536548, 1789927666, -205950648, -2067906082, 450548861, 1843258603, -187386543, -2083289657, 
@@ -105,9 +105,6 @@ public class HexUtil {
         *  Reference: http://snippets.dzone.com/tag/crc32
         **************************************************************************/
 
-        //String hexString = EncodingUtil.convertToHex(data);
-        //Integer[] intArr = hexStr.getChars();
-        //hexStr = null;
         Integer b = 0;
         Integer crc = -1;  //hexToInt('ffffffff');
         Integer size = hexStr.length();
@@ -268,108 +265,63 @@ public class HexUtil {
     public static Integer hexToInt(String hexStr){
         Integer result = 0;
 
-        for (Integer j = 0; j < hexStr.length(); j++){
-            result |= (((hexStr.charAt(j) & 15)+(hexStr.charAt(j)>>>6)*9)) << (4*(hexStr.length()-j-1));
+        for (Integer j = 0; j < hexStr.length(); j+=2){
+            result |= (((hexStr.charAt(j  ) & 15)+(hexStr.charAt(j  )>>>6)*9)) << (4*(hexStr.length()-j-1));
+            result |= (((hexStr.charAt(j+1) & 15)+(hexStr.charAt(j+1)>>>6)*9)) << (4*(hexStr.length()-j-2));
         }
+
         return result;
     }
+    
+    public static Long hexToIntLittleEndian(String hexStr){
+        Long mask = 4294967295L; //FFFFFFFF
+        Integer result = 0;
 
-    //public static Integer hexToInt (String hexString)
-    //{
-    //    Map<String,Integer> hexMap = new Map<String,Integer>
-    //    {
-    //    '0'=>0,'1'=>1,'2'=>2,'3'=>3,'4'=>4,'5'=>5,'6'=>6,'7'=>7,'8'=>8,'9'=>9,'a'=>10,
-    //    'b'=>11,'c'=>12,'d'=>13,'e'=>14,'f'=>15,'A'=>10,'B'=>11,'C'=>12,'D'=>13,'E'=>14,'F'=>15
-    //    };
-        
-    //    Integer tempInteger = 0;
-    //    Integer returnedInteger = 0;
-    //    for (Integer j = 0; j < hexString.length(); j++)
-    //    {
-    //        tempInteger = hexMap.get(hexString.substring(hexString.length()-(j+1), hexString.length()-j));
-    //        returnedInteger += tempInteger * (Integer)Math.pow(16,j);
-        
+        for (Integer j = 0; j < hexStr.length(); j+=2){
+            result |= (((hexStr.charAt(j  ) & 15)+(hexStr.charAt(j  )>>>6)*9)) << (4*(j+1));
+            result |= (((hexStr.charAt(j+1) & 15)+(hexStr.charAt(j+1)>>>6)*9)) << (4*(j  ));
+        }
+
+        return result & mask;
+    }
+    //public static Integer hexToInt2(String hexStr){
+    //    Integer result = 0;
+
+    //    for (Integer j = 0; j < hexStr.length(); j++){
+    //        result |= (((hexStr.charAt(j) & 15)+(hexStr.charAt(j)>>>6)*9)) << (4*(hexStr.length()-j-1));
     //    }
-        
-    //    return returnedInteger;
+
+    //    return result;
     //}
 
-    public static Long hexToIntLittleEndian(String hexString)
-    {
-        Long mask = 4294967295L; //FFFFFFFF
-        String tempString = '';
+    //public static Long hexToIntLittleEndian2(String hexString)
+    //{
+    //    Long mask = 4294967295L; //FFFFFFFF
+    //    String tempString = '';
         
-        for (Integer j = hexString.length(); j > 0; j=j-2)
-        
-            {
-                tempString = tempString + hexString.substring(j-2,j-1);
-                tempString = tempString + hexString.substring(j-1,j);
-            }
-        return hexToInt(tempString) & mask;
-    }
+    //    for (Integer j = hexString.length(); j > 0; j-=2){
+    //        tempString += hexString.mid(j-2, 2);
+    //    }
+
+    //    return hexToInt(tempString) & mask;
+    //}
 
     //Int to Little Endian Hex
-    public static String intToHex (Integer decNumber, Integer sizeInBytes)
+    public static String intToHex(Integer decNumber, Integer sizeInBytes)
     {
-        Long mask = 4294967295L; //FFFFFFFF
-        Long decimalNumber = decNumber & mask;
-        String LEHexStringOfDecimal = '';
-        Long remainder = 0;
+        String[] hexValues = new List<String>{'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
+        String hexStr = '';
         Integer byteLocation = 0;
-        String tempRightDigit ='0';
-        String tempLeftDigit ='0';
 
-        while (decimalnumber > 0 && LEHexStringOfDecimal.length()<sizeInBytes*2)
+        while (decNumber != 0 && hexStr.length()<sizeInBytes*2)
         {
-            remainder = math.mod(decimalnumber, 16);
-            decimalnumber = decimalnumber / 16;
-            if (remainder == 1) tempRightDigit = '1';
-            if (remainder == 2) tempRightDigit = '2';
-            if (remainder == 3) tempRightDigit = '3';
-            if (remainder == 4) tempRightDigit = '4';
-            if (remainder == 5) tempRightDigit = '5';
-            if (remainder == 6) tempRightDigit = '6';
-            if (remainder == 7) tempRightDigit = '7';
-            if (remainder == 8) tempRightDigit = '8';
-            if (remainder == 9) tempRightDigit = '9';
-            if (remainder == 10) tempRightDigit = 'a';
-            if (remainder == 11) tempRightDigit = 'b';
-            if (remainder == 12) tempRightDigit = 'c';
-            if (remainder == 13) tempRightDigit = 'd';
-            if (remainder == 14) tempRightDigit = 'e';
-            if (remainder == 15) tempRightDigit = 'f';
-            
-            if (remainder == 0)  tempRightDigit = '0';
-
-            remainder = math.mod(decimalnumber, 16);
-            decimalnumber = decimalnumber / 16;
-            if (remainder == 0) tempLeftDigit = '0';
-            if (remainder == 1) tempLeftDigit = '1';
-            if (remainder == 2) tempLeftDigit = '2';
-            if (remainder == 3) tempLeftDigit = '3';
-            if (remainder == 4) tempLeftDigit = '4';
-            if (remainder == 5) tempLeftDigit = '5';
-            if (remainder == 6) tempLeftDigit = '6';
-            if (remainder == 7) tempLeftDigit = '7';
-            if (remainder == 8) tempLeftDigit = '8';
-            if (remainder == 9) tempLeftDigit = '9';
-            if (remainder == 10) tempLeftDigit = 'a';
-            if (remainder == 11) tempLeftDigit = 'b';
-            if (remainder == 12) tempLeftDigit = 'c';
-            if (remainder == 13) tempLeftDigit = 'd';
-            if (remainder == 14) tempLeftDigit = 'e';
-            if (remainder == 15) tempLeftDigit = 'f';
-             
-            LEHexStringOfDecimal = LEHEXStringOfDecimal + tempLeftDigit + tempRightDigit;
+            hexStr += hexValues[(decNumber>>>4) & 15] + hexValues[decNumber & 15];
+            decNumber >>>= 8;
             byteLocation++;
         }
 
-        //for (Integer x = byteLocation; x < sizeInBytes; x++) {
-        //    LEHexStringOfDecimal = LEHexStringOfDecimal + '00';
-        //}
+        hexStr += '00'.repeat(sizeInBytes-byteLocation);
 
-        LEHexStringOfDecimal += '00'.repeat(sizeInBytes-byteLocation);
-
-        return LEHexStringOfDecimal;
+        return hexStr;
     }
 }

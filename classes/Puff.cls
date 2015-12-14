@@ -169,7 +169,7 @@ public class Puff {
         }
 
         ///* drop need bits and update buffer, always zero to seven bits left */
-        s.bitbuf = (Integer)(val >> need);
+        s.bitbuf = (Integer)(val >>> need);
         s.bitcnt -= need;
 
         //System.debug('reading '+need+' bit(s) result: '+(Integer)(val & ((1L << need) - 1)));
@@ -223,7 +223,7 @@ public class Puff {
         len = (Integer)hexToLong(s.inStr.mid(s.incnt++ *2, 2));
         len |= (Integer)hexToLong(s.inStr.mid(s.incnt++ *2, 2)) << 8;
         //if ((Integer)hexToLong(s.inStr.mid(s.incnt++ *2, 2)) != (~len & 255) ||
-        //    (Integer)hexToLong(s.inStr.mid(s.incnt++ *2, 2)) != ((~len >> 8) & 255))
+        //    (Integer)hexToLong(s.inStr.mid(s.incnt++ *2, 2)) != ((~len >>> 8) & 255))
         //    return -2;                              // didn't match complement! 
         s.incnt++;
         s.incnt++;
@@ -336,7 +336,7 @@ public class Puff {
         while (true) {
             while (left-- != 0) {
                 code |= bitbuf & 1;
-                bitbuf >>= 1;
+                bitbuf >>>= 1;
                 count = next[len];
                 if (code - count < first) { /* if length len, return symbol */
                     s.bitbuf = bitbuf;
