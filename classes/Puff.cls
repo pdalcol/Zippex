@@ -542,7 +542,7 @@ public class Puff {
                     //if (s.outcnt == s.outlen)
                     //    return 100;
                     //s.out[s.outcnt] = symbol; ////
-                    s.out += HexUtil.intToHex(symbol, 1);
+                    s.out += HexUtil.intToHexLE(symbol, 1);
                 //}
                 s.outcnt++;
             }

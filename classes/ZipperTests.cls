@@ -26,22 +26,22 @@ private class ZipperTests
         System.assertEquals(HexUtil.hexToInt('80000000'),(Integer)(2147483648L));
         System.assertEquals(HexUtil.hexToInt('00000000'),(Integer)(0));
 
-        // public static Long hexToIntLittleEndian(String hexString)
-        System.assertEquals(HexUtil.hexToIntLittleEndian('ffffffff'),4294967295L);
-        System.assertEquals(HexUtil.hexToIntLittleEndian('feffffff'),4294967294L);
-        System.assertEquals(HexUtil.hexToIntLittleEndian('ffffff7f'),2147483647 );
-        System.assertEquals(HexUtil.hexToIntLittleEndian('00000080'),2147483648L);
-        System.assertEquals(HexUtil.hexToIntLittleEndian('00000000'),0);
+        // public static Long hexToLongLE(String hexString)
+        System.assertEquals(HexUtil.hexToLongLE('ffffffff'),4294967295L);
+        System.assertEquals(HexUtil.hexToLongLE('feffffff'),4294967294L);
+        System.assertEquals(HexUtil.hexToLongLE('ffffff7f'),2147483647 );
+        System.assertEquals(HexUtil.hexToLongLE('00000080'),2147483648L);
+        System.assertEquals(HexUtil.hexToLongLE('00000000'),0);
 
-        // public static String intToHex (Integer decNumber, Integer sizeInBytes)
-        System.assertEquals(HexUtil.intToHex((Integer)(4294967295L),4),'ffffffff');
-        System.assertEquals(HexUtil.intToHex((Integer)(4294967294L),4),'feffffff');
-        System.assertEquals(HexUtil.intToHex((Integer)(2147483647 ),4),'ffffff7f');
-        System.assertEquals(HexUtil.intToHex((Integer)(2147483648L),4),'00000080');
-        System.assertEquals(HexUtil.intToHex(0,4),'00000000');
-        System.assertEquals(HexUtil.intToHex(878678,4),'56680d00');
-        System.assertEquals(HexUtil.intToHex(878678,2),'5668');
-        System.assertEquals(HexUtil.intToHex(878678,0),'');
+        // public static String intToHexLE (Integer decNumber, Integer sizeInBytes)
+        System.assertEquals(HexUtil.intToHexLE((Integer)(4294967295L),4),'ffffffff');
+        System.assertEquals(HexUtil.intToHexLE((Integer)(4294967294L),4),'feffffff');
+        System.assertEquals(HexUtil.intToHexLE((Integer)(2147483647 ),4),'ffffff7f');
+        System.assertEquals(HexUtil.intToHexLE((Integer)(2147483648L),4),'00000080');
+        System.assertEquals(HexUtil.intToHexLE(0,4),'00000000');
+        System.assertEquals(HexUtil.intToHexLE(878678,4),'56680d00');
+        System.assertEquals(HexUtil.intToHexLE(878678,2),'5668');
+        System.assertEquals(HexUtil.intToHexLE(878678,0),'');
 
     }
     
