@@ -33,7 +33,7 @@ private class ZipperTests
         System.assertEquals(HexUtil.hexToLongLE('00000080'),2147483648L);
         System.assertEquals(HexUtil.hexToLongLE('00000000'),0);
 
-        // public static String intToHexLE (Integer decNumber, Integer sizeInBytes)
+        // public static String intToHexLE(Integer decNumber, Integer sizeInBytes)
         System.assertEquals(HexUtil.intToHexLE((Integer)(4294967295L),4),'ffffffff');
         System.assertEquals(HexUtil.intToHexLE((Integer)(4294967294L),4),'feffffff');
         System.assertEquals(HexUtil.intToHexLE((Integer)(2147483647 ),4),'ffffff7f');
