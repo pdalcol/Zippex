@@ -159,49 +159,49 @@ public class HexUtil {
     /**************************************************************************
     *  Using direct calculation
     **************************************************************************/
-    public static Integer CRC32Calc_slow (Blob data) 
-    {
-        Integer crc = -1; //hexToInt('ffffffff');
-        String hexString = EncodingUtil.convertToHex(data);
-        //crc  = hexToInt('ffffffff');       // initial contents of LFBSR
-        Integer poly = hexToInt('edb88320');   // reverse polynomial
-        Integer b = 0;
+    //public static Integer CRC32Calc_slow (Blob data) 
+    //{
+    //    Integer crc = -1; //hexToInt('ffffffff');
+    //    String hexString = EncodingUtil.convertToHex(data);
+    //    //crc  = hexToInt('ffffffff');       // initial contents of LFBSR
+    //    Integer poly = hexToInt('edb88320');   // reverse polynomial
+    //    Integer b = 0;
 
-        for (Integer j = 0; j < hexString.length()/2; j++)
-        {
-            b = hexToInt(hexString.substring(j*2, j*2+2));
-            Integer temp = (crc ^ b) & hexToInt('ff');
+    //    for (Integer j = 0; j < hexString.length()/2; j++)
+    //    {
+    //        b = hexToInt(hexString.substring(j*2, j*2+2));
+    //        Integer temp = (crc ^ b) & hexToInt('ff');
 
-            // read 8 bits one at a time
-            for (Integer i = 0; i < 8; i++) 
-            {
-                if ((temp & 1) == 1) {
-                    temp = (temp >>> 1) ^ poly;
-                } else {
-                    temp = (temp >>> 1);
-                }
-            }
-            crc = (crc >>> 8) ^ temp;
-        }
+    //        // read 8 bits one at a time
+    //        for (Integer i = 0; i < 8; i++) 
+    //        {
+    //            if ((temp & 1) == 1) {
+    //                temp = (temp >>> 1) ^ poly;
+    //            } else {
+    //                temp = (temp >>> 1);
+    //            }
+    //        }
+    //        crc = (crc >>> 8) ^ temp;
+    //    }
 
-        // flip bits
-        crc = crc ^ -1;//hexToInt('ffffffff');
+    //    // flip bits
+    //    crc = crc ^ -1;//hexToInt('ffffffff');
 
-        System.debug('CRC32 (via direct calculation) = ' + intToHexLE(crc,4));
-        return crc;
+    //    System.debug('CRC32 (via direct calculation) = ' + intToHexLE(crc,4));
+    //    return crc;
 
-    }
+    //}
 
-    public static Integer hexToInt(String hexStr){
-        Integer result = 0;
+    //public static Integer hexToInt(String hexStr){
+    //    Integer result = 0;
 
-        for (Integer j = 0; j < hexStr.length(); j+=2){
-            result |= (((hexStr.charAt(j  ) & 15)+(hexStr.charAt(j  )>>>6)*9)) << (4*(hexStr.length()-j-1));
-            result |= (((hexStr.charAt(j+1) & 15)+(hexStr.charAt(j+1)>>>6)*9)) << (4*(hexStr.length()-j-2));
-        }
+    //    for (Integer j = 0; j < hexStr.length(); j+=2){
+    //        result |= (((hexStr.charAt(j  ) & 15)+(hexStr.charAt(j  )>>>6)*9)) << (4*(hexStr.length()-j-1));
+    //        result |= (((hexStr.charAt(j+1) & 15)+(hexStr.charAt(j+1)>>>6)*9)) << (4*(hexStr.length()-j-2));
+    //    }
 
-        return result;
-    }
+    //    return result;
+    //}
     
     //Hex to Long Little Endian
     public static Long hexToLongLE(String hexStr){

@@ -117,7 +117,8 @@ public class Zipper
     private String offsetOfStartOfCentralDir = '00000000'; //(4 bytes)
     private String zipfileCommentLength = '0000';  //(this is c), (2 bytes)
     private String zipfileComment = ''; // (c bytes)
-    
+    //////TO DO: preserve file comment!
+
     private String assembleEndOfCentralDir ()
     {
         return endCentralDirSignature + numberOfThisDisk + numberOfTheDiskWithStartCentralDir + entriesInCentralDirOnThisDisk +
