@@ -412,9 +412,9 @@ public class Zipper
                                  + (Integer)HexUtil.hexToLongLE(extraFieldLength)
                                  + (Integer)HexUtil.hexToLongLE(compressedSize);
 
-            return Zipper.LFHSignature + minExtractorVersion + gPFlagBit + compressionMethod +lastModTime + lastModDate + 
-                    crc32 + compressedSize + uncompressedSize + fileNameLength + extraFieldLength + fileName + extraField +
-                    compressedFileData;
+            return Zipper.LFHSignature + minExtractorVersion + gPFlagBit + compressionMethod + lastModTime 
+                    + lastModDate + crc32 + compressedSize + uncompressedSize + fileNameLength + extraFieldLength 
+                    + fileName + extraField + compressedFileData;
         }
 
         public String assembleCentralFileHeader()
@@ -422,8 +422,8 @@ public class Zipper
             if (String.isBlank(crc32)) {  
                 crc32 = HexUtil.intToHexLE(HexUtil.CRC32Table(compressedFileData), 4);// (4 bytes) 
             }
-            return Zipper.CFHSignature + creatorVersion + minExtractorVersion + gPFlagBit + compressionMethod +lastModTime + lastModDate
-                    + crc32 + compressedSize + uncompressedSize + fileNameLength + extraFieldLength
+            return Zipper.CFHSignature + creatorVersion + minExtractorVersion + gPFlagBit + compressionMethod + lastModTime 
+                    + lastModDate + crc32 + compressedSize + uncompressedSize + fileNameLength + extraFieldLength
                     + fileCommentLength + diskNumStart + internalFileAtt + externalFileAtt + offsetOfLH + fileName 
                     + extraField + fileComment;
         }
