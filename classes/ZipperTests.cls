@@ -5,19 +5,19 @@ private class ZipperTests
     {
 
         String testData = 'This is a test';  //test data
-        Integer predictedCRC32 = (Integer)(3229261618L);
-        System.assertEquals(HexUtil.CRC32Table(Blob.valueOf(testData)) , predictedCRC32);
-        System.assertEquals(HexUtil.CRC32Table(EncodingUtil.convertToHex(Blob.valueOf(testData))) , predictedCRC32);
+        Integer expectedCRC32 = (Integer)(3229261618L);
+        System.assertEquals(HexUtil.CRC32Table(Blob.valueOf(testData)) , expectedCRC32);
+        System.assertEquals(HexUtil.CRC32Table(EncodingUtil.convertToHex(Blob.valueOf(testData))) , expectedCRC32);
 
         testData = 'test two';
-        predictedCRC32 = 1542186603;
-        System.assertEquals(HexUtil.CRC32Table(Blob.valueOf(testData)) , predictedCRC32);
-        System.assertEquals(HexUtil.CRC32Table(EncodingUtil.convertToHex(Blob.valueOf(testData))) , predictedCRC32);
+        expectedCRC32 = 1542186603;
+        System.assertEquals(HexUtil.CRC32Table(Blob.valueOf(testData)) , expectedCRC32);
+        System.assertEquals(HexUtil.CRC32Table(EncodingUtil.convertToHex(Blob.valueOf(testData))) , expectedCRC32);
 
         testData = '';
-        predictedCRC32 = 0;
-        System.assertEquals(HexUtil.CRC32Table(Blob.valueOf(testData)) , predictedCRC32);
-        System.assertEquals(HexUtil.CRC32Table(EncodingUtil.convertToHex(Blob.valueOf(testData))) , predictedCRC32);
+        expectedCRC32 = 0;
+        System.assertEquals(HexUtil.CRC32Table(Blob.valueOf(testData)) , expectedCRC32);
+        System.assertEquals(HexUtil.CRC32Table(EncodingUtil.convertToHex(Blob.valueOf(testData))) , expectedCRC32);
 
         // public static Integer hexToInt(String hexStr)
         //System.assertEquals(HexUtil.hexToInt('ffffffff'),(Integer)(4294967295L));

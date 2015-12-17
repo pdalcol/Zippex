@@ -3,7 +3,7 @@ public class Zipper
     private Map<String, FileObject> zipFileMap = new Map<String, FileObject>{};
     protected String zipFileString = '';  // stores the Hex version of the file blob
     
-    // Zipper Zip  Contructor
+    // Zipper constructor
     public Zipper(){}
    
     // Zipper UnZipping Constructor
@@ -15,7 +15,7 @@ public class Zipper
         Integer numberOfFiles = (Integer)HexUtil.hexToLongLE(zipFileString.mid(offsetOfEndCentralDirSignature+10*2, 2*2));    //offset 10, 2 bytes
         
         offsetOfStartOfCentralDir = zipFileString.mid(offsetOfEndCentralDirSignature+16*2, 4*2); // 4 bytes
-            
+        
         Integer offset = (Integer)HexUtil.hexToLongLE(offsetOfStartOfCentralDir);
         
         for (Integer fileLoop = 0; fileLoop < numberOfFiles; fileLoop++)
@@ -23,7 +23,6 @@ public class Zipper
             FileObject tempFile = new FileObject(zipfileString, offset);
             zipFileMap.put(EncodingUtil.convertFromHex(tempFile.fileName).toString(), tempFile);
             offset = tempFile.c_offsetToNextRecord;
-    
         }
     }
     
@@ -105,18 +104,18 @@ public class Zipper
     private final static String CFHSignature = '504b0102';  // little Endian Central file header signature
     
     // Data Descriptor
-    private final static String DDSignature = '504b0708';
+    private final static String DDSignature  = '504b0708';
 
     // End of Central Directory records
-    private final String endCentralDirSignature ='504b0506'; //Little Endian formatted signature (4 bytes)
-    private final String numberOfThisDisk = '0000'; // (2 bytes)
+    private final String endCentralDirSignature  = '504b0506'; //Little Endian formatted signature (4 bytes)
+    private final String numberOfThisDisk        = '0000'; // (2 bytes)
     private final String numberOfTheDiskWithStartCentralDir = '0000'; //(2 bytes)
-    private String entriesInCentralDirOnThisDisk =  '0000' ;//(2 bytes)
-    private String entriesCentralDir  = '0000'; //(2 bytes)
-    private String sizeOfCentralDir  = '00000000'; //(4 bytes)
-    private String offsetOfStartOfCentralDir = '00000000'; //(4 bytes)
-    private String zipfileCommentLength = '0000';  //(this is c), (2 bytes)
-    private String zipfileComment = ''; // (c bytes)
+    private String entriesInCentralDirOnThisDisk = '0000' ;//(2 bytes)
+    private String entriesCentralDir             = '0000'; //(2 bytes)
+    private String sizeOfCentralDir              = '00000000'; //(4 bytes)
+    private String offsetOfStartOfCentralDir     = '00000000'; //(4 bytes)
+    private String zipfileCommentLength          = '0000';  //(this is c), (2 bytes)
+    private String zipfileComment                = ''; // (c bytes)
     //////TO DO: preserve file comment!
 
     private String assembleEndOfCentralDir ()
@@ -201,22 +200,22 @@ public class Zipper
 
         FileObject tempFileObject = new FileObject();
         
-        tempFileObject.lastModTime = HexUtil.intToHexLE(getCurrentTime(),2); // (2 bytes) 
-        tempFileObject.lastModDate = HexUtil.intToHexLE(getCurrentDate(),2); // (2 bytes)
-        tempFileObject.crc32 = crc32;
-        tempFileObject.uncompressedSize = HexUtil.intToHexLE(fileData.size(), 4);// (4 bytes) 
-        tempFileObject.compressedSize = tempFileObject.uncompressedSize;// (4 bytes), creates (n)    
-        tempFileObject.extraFieldLength = '0000';// (2 bytes) , creates (e)
-        tempFileObject.fileCommentLength = '0000';// (2 bytes), creates (c)
-        tempFileObject.diskNumStart = '0000';// (2 bytes) 
-        tempFileObject.internalFileAtt = '0000';// (2 bytes) //Internal file attributes
-        tempFileObject.externalFileAtt = '0000A481';// (4 bytes) //External file attributes
-        tempFileObject.fileName = EncodingUtil.convertToHex(Blob.valueOf(fileName));// (f bytes) // from the parameters passed
-        tempFileObject.fileNameLength = HexUtil.intToHexLE(tempFileObject.fileName.length()/2, 2);//HexUtil.intToHexLE(fileName.length(), 2);// (2 bytes), creates (f)
-        tempFileObject.extraField = '';
-        tempFileObject.fileComment = '';// (c bytes) 
+        tempFileObject.lastModTime        = HexUtil.intToHexLE(getCurrentTime(),2); // (2 bytes) 
+        tempFileObject.lastModDate        = HexUtil.intToHexLE(getCurrentDate(),2); // (2 bytes)
+        tempFileObject.crc32              = crc32;
+        tempFileObject.uncompressedSize   = HexUtil.intToHexLE(fileData.size(), 4);// (4 bytes) 
+        tempFileObject.compressedSize     = tempFileObject.uncompressedSize;// (4 bytes), creates (n)    
+        tempFileObject.extraFieldLength   = '0000';// (2 bytes) , creates (e)
+        tempFileObject.fileCommentLength  = '0000';// (2 bytes), creates (c)
+        tempFileObject.diskNumStart       = '0000';// (2 bytes) 
+        tempFileObject.internalFileAtt    = '0000';// (2 bytes) //Internal file attributes
+        tempFileObject.externalFileAtt    = '0000A481';// (4 bytes) //External file attributes
+        tempFileObject.fileName           = EncodingUtil.convertToHex(Blob.valueOf(fileName));// (f bytes) // from the parameters passed
+        tempFileObject.fileNameLength     = HexUtil.intToHexLE(tempFileObject.fileName.length()/2, 2);//HexUtil.intToHexLE(fileName.length(), 2);// (2 bytes), creates (f)
+        tempFileObject.extraField         = '';
+        tempFileObject.fileComment        = '';// (c bytes) 
         tempFileObject.compressedFileData = EncodingUtil.convertToHex(fileData); // (n bytes) // from the parameters passed
-        tempFileObject.fileDataInZipStr = false;
+        tempFileObject.fileDataInZipStr   = false;
 
         zipFileMap.put(fileName, tempFileObject);  //add the new subFile to the Zip List
     }
@@ -284,30 +283,30 @@ public class Zipper
     public class FileObject
     {
         //All strings are hex representations in little endian format
-        public String creatorVersion = '0A00'; // (2 bytes) likely Windows NT
-        public String minExtractorVersion = '0A00'; // (2 bytes) likely Windows NT
-        public String gPFlagBit = '0000';  // (2 bytes) general purpose flag bit
-        public String compressionMethod = '0000'; // (2 bytes) 0 = no compression
-        public String lastModTime = '0000';// (2 bytes) 
-        public String lastModDate = '0000';// (2 bytes) 
-        public String crc32 = null;// (4 bytes) 
-        public String compressedSize = '00000000';// (4 bytes), creates (n)
-        public String uncompressedSize = '00000000';// (4 bytes) 
-        public String fileNameLength = '00000000';// (2 bytes), creates (f)
-        public String extraFieldLength = '0000';// (2 bytes) , creates (e)
-        public String fileCommentLength = '0000';// (2 bytes), creates (c)
-        public String diskNumStart = '0000';// (2 bytes) 
-        public String internalFileAtt = '0000';// (2 bytes) 
-        public String externalFileAtt = '00000000';// (4 bytes) 
-        public String offsetOfLH = '00000000';// (4 bytes) 
-        public String fileName = '';// (f bytes) 
-        public String extraField = '';// (e bytes) 
-        public String fileComment = '';// (c bytes) 
-        public String compressedFileData = '';// (n bytes)
+        public String creatorVersion      = '0A00';     // (2 bytes) likely Windows NT
+        public String minExtractorVersion = '0A00';     // (2 bytes) likely Windows NT
+        public String gPFlagBit           = '0000';     // (2 bytes) general purpose flag bit
+        public String compressionMethod   = '0000';     // (2 bytes) 0 = no compression
+        public String lastModTime         = '0000';     // (2 bytes) 
+        public String lastModDate         = '0000';     // (2 bytes) 
+        public String crc32               = null;       // (4 bytes) 
+        public String compressedSize      = '00000000'; // (4 bytes), creates (n)
+        public String uncompressedSize    = '00000000'; // (4 bytes) 
+        public String fileNameLength      = '00000000'; // (2 bytes), creates (f)
+        public String extraFieldLength    = '0000';     // (2 bytes), creates (e)
+        public String fileCommentLength   = '0000';     // (2 bytes), creates (c)
+        public String diskNumStart        = '0000';     // (2 bytes) 
+        public String internalFileAtt     = '0000';     // (2 bytes) 
+        public String externalFileAtt     = '00000000'; // (4 bytes) 
+        public String offsetOfLH          = '00000000'; // (4 bytes) 
+        public String fileName            = '';         // (f bytes) 
+        public String extraField          = '';         // (e bytes) 
+        public String fileComment         = '';         // (c bytes) 
+        public String compressedFileData  = '';         // (n bytes)
 
         public Integer c_offsetToNextRecord = 0;  //offsetToNext Central Dir Record
         public Integer l_offsetToNextRecord = 0;  //offsetToNext Local Header Record
-        public Boolean fileDataInZipStr = false;
+        public Boolean fileDataInZipStr     = false;
 
     
         // Constructor
@@ -358,21 +357,21 @@ public class Zipper
         {
             Integer strOffset = offset *2;
 
-            minExtractorVersion = zipFileString.substring(strOffset+4*2, strOffset+4*2 + 2*2); // (2 bytes) likely Windows NT  Offset 4
-            gPFlagBit = zipFileString.substring(strOffset+6*2, strOffset+6*2 + 2*2);  // (2 bytes) general purpose flag bit  Offset 6
-            compressionMethod = zipFileString.substring(strOffset+8*2, strOffset+8*2 + 2*2); // (2 bytes) no compression  Offset 8
-            lastModTime = zipFileString.substring(strOffset+10*2, strOffset+10*2 + 2*2);// (2 bytes)   Offset 10
-            lastModDate = zipFileString.substring(strOffset+12*2, strOffset+12*2 + 2*2);// (2 bytes)    Offset 12
+            minExtractorVersion  = zipFileString.mid(strOffset+4*2, 2*2); // (2 bytes) likely Windows NT  Offset 4
+            gPFlagBit            = zipFileString.mid(strOffset+6*2, 2*2); // (2 bytes) general purpose flag bit  Offset 6
+            compressionMethod    = zipFileString.mid(strOffset+8*2, 2*2); // (2 bytes) no compression  Offset 8
+            lastModTime          = zipFileString.mid(strOffset+10*2, 2*2);// (2 bytes)  Offset 10
+            lastModDate          = zipFileString.mid(strOffset+12*2, 2*2);// (2 bytes)  Offset 12
             
             //System.debug('gPFlagBit '+gPFlagBit);
             if ((HexUtil.hexToLongLE(gPFlagBit.left(2)) & 8 ) == 0) {
-                crc32 = zipFileString.substring(strOffset+14*2, strOffset+14*2 + 4*2);// (4 bytes)      Offset 14
-                compressedSize = zipFileString.substring(strOffset+18*2, strOffset+18*2 + 4*2);// (4 bytes), creates (n)     Offset 18
-                uncompressedSize = zipFileString.substring(strOffset+22*2, strOffset+22*2 + 4*2);// (4 bytes)      Offset 22
+                crc32            = zipFileString.mid(strOffset+14*2, 4*2);// (4 bytes)  Offset 14
+                compressedSize   = zipFileString.mid(strOffset+18*2, 4*2);// (4 bytes), creates (n) Offset 18
+                uncompressedSize = zipFileString.mid(strOffset+22*2, 4*2);// (4 bytes)  Offset 22
             }
 
-            fileNameLength = zipFileString.substring(strOffset+26*2, strOffset+26*2 + 2*2);// (2 bytes), creates (f)     Offset 26
-            extraFieldLength = zipFileString.substring(strOffset+28*2, strOffset+28*2 + 2*2);// (2 bytes) , creates (e)     Offset 28
+            fileNameLength       = zipFileString.mid(strOffset+26*2, 2*2);// (2 bytes), creates (f)     Offset 26
+            extraFieldLength     = zipFileString.mid(strOffset+28*2, 2*2);// (2 bytes), creates (e)     Offset 28
 
             //offset = offset /2;
 
@@ -389,11 +388,11 @@ public class Zipper
             
             if ((HexUtil.hexToLongLE(gPFlagBit.left(2)) & 8 ) != 0) {
                 l_offsetToNextRecord *= 2;
-                String signature = zipFileString.substring(l_offsetToNextRecord+0*2, l_offsetToNextRecord+0*2 + 4*2);// (4 bytes)
+                String signature = zipFileString.mid(l_offsetToNextRecord+0*2, 4*2); // (4 bytes)
                 if (signature != DDSignature) {l_offsetToNextRecord -= 4*2;}
-                crc32 = zipFileString.substring(l_offsetToNextRecord+4*2, l_offsetToNextRecord+4*2 + 4*2);// (4 bytes)      Offset 0/4
-                compressedSize = zipFileString.substring(l_offsetToNextRecord+8*2, l_offsetToNextRecord+8*2 + 4*2);// (4 bytes), creates (n)     Offset 4/8
-                uncompressedSize = zipFileString.substring(l_offsetToNextRecord+12*2, l_offsetToNextRecord+12*2 + 4*2);// (4 bytes)      Offset 8/12
+                crc32            = zipFileString.mid(l_offsetToNextRecord+4*2, 4*2); // (4 bytes)  Offset 0/4
+                compressedSize   = zipFileString.mid(l_offsetToNextRecord+8*2, 4*2); // (4 bytes), creates (n)     Offset 4/8
+                uncompressedSize = zipFileString.mid(l_offsetToNextRecord+12*2, 4*2);// (4 bytes)  Offset 8/12
                 l_offsetToNextRecord /= 2;
                 l_offsetToNextRecord += 16; 
             }
