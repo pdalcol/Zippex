@@ -1,3 +1,6 @@
+//
+//Copyright (c) 2015 Pedro Dal Col, Pliny Smith
+//
 @isTest
 private class ZipperTests 
 {

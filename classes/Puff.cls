@@ -1,94 +1,9 @@
+//
+//Copyright (c) 2015 Pedro Dal Col, Pliny Smith
+//
+//Puff.cls based on Mark Adler's puff.c
+//
 public class Puff {
-        /*
-     * puff.c
-     * Copyright (C) 2002-2013 Mark Adler
-     * For conditions of distribution and use, see copyright notice in puff.h
-     * version 2.3, 21 Jan 2013
-     *
-     * puff.c is a simple inflate written to be an unambiguous way to specify the
-     * deflate format.  It is not written for speed but rather simplicity.  As a
-     * side benefit, this code might actually be useful when small code is more
-     * important than speed, such as bootstrap applications.  For typical deflate
-     * data, zlib's inflate() is about four times as fast as puff().  zlib's
-     * inflate compiles to around 20K on my machine, whereas puff.c compiles to
-     * around 4K on my machine (a PowerPC using GNU cc).  If the faster decode()
-     * function here is used, then puff() is only twice as slow as zlib's
-     * inflate().
-     *
-     * All dynamically allocated memory comes from the stack.  The stack required
-     * is less than 2K bytes.  This code is compatible with 16-bit int's and
-     * assumes that long's are at least 32 bits.  puff.c uses the short data type,
-     * assumed to be 16 bits, for arrays in order to to conserve memory.  The code
-     * works whether integers are stored big endian or little endian.
-     *
-     * In the comments below are "Format notes" that describe the inflate process
-     * and document some of the less obvious aspects of the format.  This source
-     * code is meant to supplement RFC 1951, which formally describes the deflate
-     * format:
-     *
-     *    http://www.zlib.org/rfc-deflate.html
-     */
-
-    /*
-     * Change history:
-     *
-     * 1.0  10 Feb 2002     - First version
-     * 1.1  17 Feb 2002     - Clarifications of some comments and notes
-     *                      - Update puff() dest and source pointers on negative
-     *                        errors to facilitate debugging deflators
-     *                      - Remove longest from struct huffman -- not needed
-     *                      - Simplify offs[] index in construct()
-     *                      - Add input size and checking, using longjmp() to
-     *                        maintain easy readability
-     *                      - Use short data type for large arrays
-     *                      - Use pointers instead of long to specify source and
-     *                        destination sizes to avoid arbitrary 4 GB limits
-     * 1.2  17 Mar 2002     - Add faster version of decode(), doubles speed (!),
-     *                        but leave simple version for readabilty
-     *                      - Make sure invalid distances detected if pointers
-     *                        are 16 bits
-     *                      - Fix fixed codes table error
-     *                      - Provide a scanning mode for determining size of
-     *                        uncompressed data
-     * 1.3  20 Mar 2002     - Go back to lengths for puff() parameters [Gailly]
-     *                      - Add a puff.h file for the interface
-     *                      - Add braces in puff() for else do [Gailly]
-     *                      - Use indexes instead of pointers for readability
-     * 1.4  31 Mar 2002     - Simplify construct() code set check
-     *                      - Fix some comments
-     *                      - Add FIXLCODES #define
-     * 1.5   6 Apr 2002     - Minor comment fixes
-     * 1.6   7 Aug 2002     - Minor format changes
-     * 1.7   3 Mar 2003     - Added test code for distribution
-     *                      - Added zlib-like license
-     * 1.8   9 Jan 2004     - Added some comments on no distance codes case
-     * 1.9  21 Feb 2008     - Fix bug on 16-bit integer architectures [Pohland]
-     *                      - Catch missing end-of-block symbol error
-     * 2.0  25 Jul 2008     - Add #define to permit distance too far back
-     *                      - Add option in TEST code for puff to write the data
-     *                      - Add option in TEST code to skip input bytes
-     *                      - Allow TEST code to read from piped stdin
-     * 2.1   4 Apr 2010     - Avoid variable initialization for happier compilers
-     *                      - Avoid unsigned comparisons for even happier compilers
-     * 2.2  25 Apr 2010     - Fix bug in variable initializations [Oberhumer]
-     *                      - Add const where appropriate [Oberhumer]
-     *                      - Split if's and ?'s for coverage testing
-     *                      - Break out test code to separate file
-     *                      - Move NIL to puff.h
-     *                      - Allow incomplete code only if single code length is 1
-     *                      - Add full code coverage test to Makefile
-     * 2.3  21 Jan 2013     - Check for invalid code length codes in dynamic blocks
-     */
-
-    //#include <setjmp.h>             /* for setjmp(), longjmp(), and jmp_buf */
-    //#include "puff.h"               /* prototype for puff() */
-
-    //#define local static            /* for local function definitions */
-
-    ///*
-    // * Maximums for allocations and loops.  It is not useful to change these --
-    // * they are fixed by the deflate format.
-    // */
     public final Integer MAXBITS = 15;             /* maximum bits in a code */
     public final Integer MAXLCODES = 286;           /* maximum number of literal/length codes */
     public final Integer MAXDCODES = 30;            /* maximum number of distance codes */

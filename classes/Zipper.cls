@@ -1,3 +1,6 @@
+//
+//Copyright (c) 2015 Pedro Dal Col, Pliny Smith
+//
 public class Zipper 
 {    
     private Map<String, FileObject> zipFileMap = new Map<String, FileObject>{};
@@ -97,13 +100,31 @@ public class Zipper
         }
     }
 
-    // Local File Header
+    public Map<String,String> getFileInfo(String fileName)
+    {
+        Map<String,String> fileInfo = new Map<String,String>();
+        if (!zipFileMap.containsKey(fileName)) {return null;}
+
+        FileObject tmpFO = zipFileMap.get(fileName);
+
+        /////Add last mod DateTime too
+        //fileInfo.put('lastModTime', lastModTime);
+        //fileInfo.put('lastModDate', lastModDate);
+        fileInfo.put('crc32', tmpFO.crc32);
+        fileInfo.put('uncompressedSize', tmpFO.uncompressedSize);
+        fileInfo.put('fileName', tmpFO.fileName);
+        fileInfo.put('fileComment', tmpFO.fileComment);
+
+        return fileInfo;
+    }
+
+    // Local File Header Signature
     private final static String LFHSignature = '504b0304';      
     
-    // Central Directory 
-    private final static String CFHSignature = '504b0102';  // little Endian Central file header signature
-    
-    // Data Descriptor
+    // Central Directory Signature
+    private final static String CFHSignature = '504b0102';
+
+    // Data Descriptor Signature
     private final static String DDSignature  = '504b0708';
 
     // End of Central Directory records
@@ -319,9 +340,9 @@ public class Zipper
         {
         offset *= 2;
 
-        creatorVersion      = zipFileString.mid(offset+4*2, 2*2); // (2 bytes) likely Windows NT  Offset 4
-        minExtractorVersion = zipFileString.mid(offset+6*2, 2*2); // (2 bytes) likely Windows NT  Offset 6
-        gPFlagBit           = zipFileString.mid(offset+8*2, 2*2); // (2 bytes) general purpose flag bit  Offset 8
+        creatorVersion      = zipFileString.mid(offset+4*2,  2*2); // (2 bytes) likely Windows NT  Offset 4
+        minExtractorVersion = zipFileString.mid(offset+6*2,  2*2); // (2 bytes) likely Windows NT  Offset 6
+        gPFlagBit           = zipFileString.mid(offset+8*2,  2*2); // (2 bytes) general purpose flag bit  Offset 8
         compressionMethod   = zipFileString.mid(offset+10*2, 2*2);// (2 bytes) no compression  Offset 10
         lastModTime         = zipFileString.mid(offset+12*2, 2*2);// (2 bytes)   Offset 12
         lastModDate         = zipFileString.mid(offset+14*2, 2*2);// (2 bytes)   Offset 14
@@ -357,9 +378,9 @@ public class Zipper
         {
             Integer strOffset = offset *2;
 
-            minExtractorVersion  = zipFileString.mid(strOffset+4*2, 2*2); // (2 bytes) likely Windows NT  Offset 4
-            gPFlagBit            = zipFileString.mid(strOffset+6*2, 2*2); // (2 bytes) general purpose flag bit  Offset 6
-            compressionMethod    = zipFileString.mid(strOffset+8*2, 2*2); // (2 bytes) no compression  Offset 8
+            minExtractorVersion  = zipFileString.mid(strOffset+4*2,  2*2); // (2 bytes) likely Windows NT  Offset 4
+            gPFlagBit            = zipFileString.mid(strOffset+6*2,  2*2); // (2 bytes) general purpose flag bit  Offset 6
+            compressionMethod    = zipFileString.mid(strOffset+8*2,  2*2); // (2 bytes) no compression  Offset 8
             lastModTime          = zipFileString.mid(strOffset+10*2, 2*2);// (2 bytes)  Offset 10
             lastModDate          = zipFileString.mid(strOffset+12*2, 2*2);// (2 bytes)  Offset 12
             
