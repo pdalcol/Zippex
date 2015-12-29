@@ -111,9 +111,9 @@ public class Zipper
         //fileInfo.put('lastModTime', lastModTime);
         //fileInfo.put('lastModDate', lastModDate);
         fileInfo.put('crc32', tmpFO.crc32);
-        fileInfo.put('uncompressedSize', tmpFO.uncompressedSize);
-        fileInfo.put('fileName', tmpFO.fileName);
-        fileInfo.put('fileComment', tmpFO.fileComment);
+        fileInfo.put('fileSize', String.valueOf( HexUtil.hexToLongLE(tmpFO.uncompressedSize)));
+        fileInfo.put('fileName',  EncodingUtil.convertFromHex(tmpFO.fileName).toString());
+        fileInfo.put('fileComment', EncodingUtil.convertFromHex(tmpFO.fileComment).toString());
 
         return fileInfo;
     }
