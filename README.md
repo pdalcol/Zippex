@@ -21,24 +21,24 @@ open an existing zip file or create a new
 
 ####Constructors:
 ####zipper()
-instantiates a new empty zipper object (empty zip archive)
+Instantiates a new empty zipper object (empty zip archive).
 
 ####zipper(Blob fileData)
-instantiates a new zipper object from an existing zip file
+Instantiates a new zipper object from an existing zip file.
 
 ######Parameters
 Name     |    Type    |     Description
 ---------|------------|--------
 fileData | Blob       |  Data containing a valid zip file
 
-######Example:
+######Example
 ```Apex
 Attachment sampleAttachment = [SELECT Name, Body FROM Attachment WHERE Id='<ID_OF_ATTACHMENT>'];
 Zipper sampleZip = new Zipper(sampleAttachment.Body);
 ```
 
 ####addFileToZip(String fileName, Blob fileData, String crc32)
-adds a new file to the current zip archive
+Adds a new file to the current zip archive.
 
 ######Parameters
 Name     |    Type    |     Description
@@ -47,7 +47,7 @@ fileName | String     | File name including full path.
 fileData | Blob       |  Data containing the file data. 
 crc32    | String     |  **(optional)**  must be hex little endian value of the CRC32.  Enter null value for addFileToZip to calculate the CRC32 of the fileData
 
-######Example:
+######Example
 ```Apex
 Zipper sampleZip = new Zipper();
 Blob fileData = Blob.valueOf('Sample text.');
@@ -57,9 +57,12 @@ Blob zipData = sampleZip.getZipFile();
 
 
 ####getFileNames()
-returns a set of filenames from the current zip archive
-
-######Example:
+Returns a set of filenames from the current zip archive.
+######Parameters
+Name       |    Type      |     Description
+-----------|--------------|--------
+**Return** | Set<String>  | All file names including full path in the current zip archive.
+######Example
 ```Apex
 Attachment sampleAttachment = [SELECT Name, Body FROM Attachment WHERE Id='<ID_OF_ATTACHMENT>'];
 Zipper sampleZip = new Zipper(sampleAttachment.Body);
@@ -71,13 +74,13 @@ for (String fileName : fileNames)
 ```
 
 ####getFile(String fileName)
-extracts the specified file contents from the current zip archive.  If the file does not exist, returns null.
+Extracts the specified file contents from the current zip archive.  If the file does not exist, returns null.
 ######Parameters
 Name      |    Type    |     Description
 ----------|------------|--------
 fileName  | String     |     File name including full path
-**return**| Blob       |     File data
-######Example:
+**Return**| Blob       |     File data
+######Example
 ```Apex
 Zipper sampleZip = new Zipper();
 sampleZip.addFileToZip('sampleFolder/test.txt', Blob.valueOf('Sample text.'), null);
@@ -86,15 +89,17 @@ System.assertEquals ('Sample text.', fileData.toString());
 ```
 
 ####getFileInfo
- public Map<String,String> getFileInfo(String fileName)
+Returns file metadata (crc32, fileSize, fileName, and fileComment).
+######Signature
+> public Map<String,String> getFileInfo(String fileName)
 
 ######Parameters
 Name       |    Type            |     Description
 -----------|--------------------|--------
 fileName   | String             |  File name including full path.
-**return** | Map<String,String> |  Contains values for crc32, fileSize, fileName, and fileComment.
+**Return** | Map<String,String> |  Contains values for crc32, fileSize, fileName, and fileComment.
 
-######Example:
+######Example
 ```Apex
 Zipper sampleZip = new Zipper();
 sampleZip.addFileToZip('sampleFolder/test.txt', Blob.valueOf('Sample text.'), null);
@@ -104,8 +109,8 @@ System.assertEquals ('sampleFolder/test.txt', fileInfoMap.get('fileName'));
 ```
 
 ####getZipFile()
-returns a Blob that contains the entire Zip archive
-#######Example:
+Returns a Blob that contains the entire Zip archive.
+######Example
 ```Apex
 Zipper sampleZip = new Zipper();
 sampleZip.addFileToZip('sampleFolder/test.txt', Blob.valueOf('Sample text.'), null);
@@ -118,7 +123,7 @@ Removes a file from the current zip archive.
 Name     |    Type    |     Description
 ---------|------------|--------
 fileName | String     | File name to remove from zip archive including full path.
-######Example:
+######Example
 ```Apex
 Zipper sampleZip = new Zipper();
 sampleZip.addFileToZip('sampleFolder/file1.txt', Blob.valueOf('Sample text1.'), null);
@@ -139,7 +144,7 @@ Name     |    Type    |     Description
 oldName  | String     |  The current file name to be modified.
 newName  | String     |  The new name that replaces the current file name.
 
-######Example:
+######Example
 ```Apex
 Zipper sampleZip = new Zipper();
 sampleZip.addFileToZip('sampleFolder/file.txt', Blob.valueOf('Sample text1.'), null);
@@ -156,7 +161,7 @@ Removes the specified prefix from all file names in the curent Zip archive only 
 Name     |    Type    |     Description
 ---------|------------|--------
 prefix   |   String   |  The prefix to remove from file names.
-######Example:
+######Example
 ```Apex
 Zipper sampleZip = new Zipper();
 sampleZip.addFileToZip('sampleFolder/file.txt', Blob.valueOf('Sample text1.'), null);
