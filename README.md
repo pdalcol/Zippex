@@ -27,9 +27,9 @@ instantiates a new empty zipper object (empty zip archive)
 instantiates a new zipper object from an existing zip file
 
 ######Parameters:
-Name   |    Type    |     Description
-----------------------------
-fileData | Blob     |  a Blob containing a valid zip file
+Name     |    Type    |     Description
+---------|------------|--------
+fileData | Blob       |  a Blob containing a valid zip file
 
 ######Example:
 ```Apex
