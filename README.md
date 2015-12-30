@@ -124,8 +124,8 @@ System.assert(sampleZip.getFileNames().contains('sampleFolder/file2.txt'));
 ####renameFile(String oldName, String newName)
 Renames a file in the current zip archive.
 ######Parameters:
-oldName - String containing the current file name to be modified
-newName - String containing the new name that replaces the current file name.
+```oldName``` - String containing the current file name to be modified
+```newName``` - String containing the new name that replaces the current file name.
 
 ######Example:
 ```Apex
@@ -143,7 +143,7 @@ Removes the specified prefix from all file names in the curent Zip archive only 
 ######Parameters:
 prefix - the prefix to remove from file names.
 ######Example:
-```
+```Apex
 Zipper sampleZip = new Zipper();
 sampleZip.addFileToZip('sampleFolder/file.txt', Blob.valueOf('Sample text1.'), null);
 System.assert(sampleZip.getFileNames().contains('sampleFolder/file.txt'));
