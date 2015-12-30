@@ -27,7 +27,9 @@ instantiates a new empty zipper object (empty zip archive)
 instantiates a new zipper object from an existing zip file
 
 ######Parameters:
-fileData - a blob containing a valid zip file
+Name   |    Type    |     Description
+----------------------------
+fileData | Blob     |  a Blob containing a valid zip file
 
 ######Example:
 ```Apex
@@ -62,7 +64,7 @@ Zipper sampleZip = new Zipper(sampleAttachment.Body);
 Set <String> fileNames = sampleZip.getFileNames();
 for (String fileName : fileNames)
 {
-	System.debug('file: ' + fileName);
+    System.debug('file: ' + fileName);
 }
 ```
 
