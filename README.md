@@ -114,6 +114,10 @@ System.assertEquals ('sampleFolder/test.txt', fileInfoMap.get('fileName'));
 public Blob getZipFile()
 ```
 Returns a Blob that contains the entire Zip archive.
+######Parameters
+Name       |    Type    |     Description
+-----------|------------|--------
+**Return** |      Blob  |  Full Zip archive data.
 ######Example
 ```Apex
 Zipper sampleZip = new Zipper();
