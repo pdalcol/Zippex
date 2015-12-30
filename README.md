@@ -30,8 +30,10 @@ Parameters:
 fileData - a blob containing a valid zip file
 
 Example:
+```Apex
 Attachment sampleAttachment = [SELECT Name, Body FROM Attachment WHERE Id='<ID_OF_ATTACHMENT>'];
 Zipper sampleZip = new Zipper(sampleAttachment.Body);
+```
 
 addFileToZip(String fileName, Blob fileData, String crc32)
 adds a new file to the current zip archive
