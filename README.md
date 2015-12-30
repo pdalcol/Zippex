@@ -26,10 +26,10 @@ instantiates a new empty zipper object (empty zip archive)
 ####zipper(Blob fileData)
 instantiates a new zipper object from an existing zip file
 
-######Parameters:
+######Parameters
 Name     |    Type    |     Description
 ---------|------------|--------
-fileData | Blob       |  a Blob containing a valid zip file
+fileData | Blob       |  Data containing a valid zip file
 
 ######Example:
 ```Apex
@@ -40,10 +40,12 @@ Zipper sampleZip = new Zipper(sampleAttachment.Body);
 ####addFileToZip(String fileName, Blob fileData, String crc32)
 adds a new file to the current zip archive
 
-######Parameters:
-fileName - file name including full path.
-fileData - Blob containing the file data. 
-crc32 - (optional)  must be hex little endian value of the CRC32.  Enter null value for addFileToZip to calculate the CRC32 of the fileData
+######Parameters
+Name     |    Type    |     Description
+---------|------------|--------
+fileName | String     | File name including full path.
+fileData | Blob       |  Data containing the file data. 
+crc32    | String     |  **(optional)**  must be hex little endian value of the CRC32.  Enter null value for addFileToZip to calculate the CRC32 of the fileData
 
 ######Example:
 ```Apex
@@ -70,9 +72,11 @@ for (String fileName : fileNames)
 
 ####getFile(String fileName)
 extracts the specified file contents from the current zip archive.  If the file does not exist, returns null.
-######Parameters:
-fileName - String containing file name including full path
-returns Blob of data
+######Parameters
+Name      |    Type    |     Description
+----------|------------|--------
+fileName  | String     |     File name including full path
+**return**| Blob       |     File data
 ######Example:
 ```Apex
 Zipper sampleZip = new Zipper();
@@ -84,9 +88,11 @@ System.assertEquals ('Sample text.', fileData.toString());
 ####getFileInfo
  public Map<String,String> getFileInfo(String fileName)
 
-######Parameters:
-fileName - file name including full path.
-returns a Map that contains values for crc32, fileSize, fileName, and fileComment.
+######Parameters
+Name       |    Type            |     Description
+-----------|--------------------|--------
+fileName   | String             |  File name including full path.
+**return** | Map<String,String> |  Contains values for crc32, fileSize, fileName, and fileComment.
 
 ######Example:
 ```Apex
@@ -108,8 +114,10 @@ Blob zipData = sampleZip.getZipFile();
 
 ####removeFileFromZip(String fileName)
 Removes a file from the current zip archive.
-######Parameters:
-fileName - String containing file name to remove from zip archive including full path 
+######Parameters
+Name     |    Type    |     Description
+---------|------------|--------
+fileName | String     | File name to remove from zip archive including full path.
 ######Example:
 ```Apex
 Zipper sampleZip = new Zipper();
@@ -125,9 +133,11 @@ System.assert(sampleZip.getFileNames().contains('sampleFolder/file2.txt'));
 
 ####renameFile(String oldName, String newName)
 Renames a file in the current zip archive.
-######Parameters:
-```oldName``` - String containing the current file name to be modified
-```newName``` - String containing the new name that replaces the current file name.
+######Parameters
+Name     |    Type    |     Description
+---------|------------|--------
+oldName  | String     |  The current file name to be modified.
+newName  | String     |  The new name that replaces the current file name.
 
 ######Example:
 ```Apex
@@ -142,8 +152,10 @@ System.assert(sampleZip.getFileNames().contains('sampleFolder/changedName.txt'))
 
 ####removePrefix(String prefix)
 Removes the specified prefix from all file names in the curent Zip archive only if it occurs at the beginning of the file name.
-######Parameters:
-prefix - the prefix to remove from file names.
+######Parameters
+Name     |    Type    |     Description
+---------|------------|--------
+prefix   |   String   |  The prefix to remove from file names.
 ######Example:
 ```Apex
 Zipper sampleZip = new Zipper();
