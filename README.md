@@ -89,9 +89,8 @@ System.assertEquals ('Sample text.', fileData.toString());
 ```
 
 ####getFileInfo
-Returns file metadata (crc32, fileSize, fileName, and fileComment).
-######Signature
 > public Map<String,String> getFileInfo(String fileName)
+Returns file metadata (crc32, fileSize, fileName, and fileComment).
 
 ######Parameters
 Name       |    Type            |     Description
@@ -109,6 +108,7 @@ System.assertEquals ('sampleFolder/test.txt', fileInfoMap.get('fileName'));
 ```
 
 ####getZipFile()
+public Blob getZipFile()
 Returns a Blob that contains the entire Zip archive.
 ######Example
 ```Apex
