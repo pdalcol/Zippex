@@ -8,10 +8,10 @@ Native Apex zip/unzip utility for the salesforce.com platform.
 #####Option 1: Manually save files to SF
 
 To use Zipper you will need 3 classes. Copy and paste into new classes in your instance. 
--HexUtil.cls
--Puff.cls
--Zipper.cls
--ZipperTests.cls 
+- HexUtil.cls
+- Puff.cls
+- Zipper.cls
+- ZipperTests.cls 
 
 #####Option 2: Install from Unmanaged Package
 
