@@ -1,18 +1,29 @@
 Copyright (c) 2015 Pedro Dal Col, Pliny Smith
 
 # zipper
-Native Apex zip library
-for salesforce.com
-
-WORK IN PROGRESS
-
-More info in the coming weeks
-
-Explanation of Zipper.
-A native Apex zip/unzip utility for the salesforce.com platform.
+Native Apex zip/unzip utility for the salesforce.com platform.
 
 ###How to install
 
+#####Option 1: Manually save files to SF
+
+To use Zipper you will need 3 classes. Copy and paste into new classes in your instance. 
+HexUtil.cls
+Puff.cls
+Zipper.cls
+ZipperTests.cls 
+
+#####Option 2: Install from Unmanaged Package
+
+Follow this link to install the latest package:
+[link]
+
+#####Option 3: Use 'Deply to Salesforce' button
+
+<a href="https://githubsfdeploy.herokuapp.com?owner=pdalcol&repo=Zipper">
+  <img alt="Deploy to Salesforce"
+       src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/src/main/webapp/resources/img/deploy.png">
+</a>
 
 ###How to use / sample code
 

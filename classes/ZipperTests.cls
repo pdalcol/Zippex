@@ -103,4 +103,22 @@ private class ZipperTests
         //public    static void unzipAttachment(Id srcAttId, Id destObjId, List fileNames, Boolean async)
 
     }
+    @isTest static void puffTest() 
+    {
+    	String source='CB48CD29C840C25C00';
+        Integer srclen = source.length()/2;
+        System.assertEquals('helphelphelphelp\n', EncodingUtil.convertFromHex(new Puff(source, srclen, null).inflate()).toString());
+
+        source='F3C8E40200';
+        srclen = source.length()/2;
+        System.assertEquals('Hi\n', EncodingUtil.convertFromHex(new Puff(source, srclen, null).inflate()).toString());
+
+        source='01050099996562616670';
+        srclen = source.length()/2;
+        System.assertEquals('ebafp', EncodingUtil.convertFromHex(new Puff(source, srclen, null).inflate()).toString());
+
+        source='649E23';
+		srclen = source.length()/2;
+        System.assertEquals('', EncodingUtil.convertFromHex(new Puff(source, srclen, null).inflate()).toString());
+    }
 }
