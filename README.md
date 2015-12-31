@@ -5,7 +5,7 @@ Native Apex zip/unzip utility for the salesforce.com platform.
 
 ###How to install
 
-#####Option 1: Manually save files to SF
+####Option 1: Manually save files to SF
 
 To use Zipper you will need 3 classes. Copy and paste into new classes in your instance. 
 - HexUtil.cls
@@ -13,12 +13,12 @@ To use Zipper you will need 3 classes. Copy and paste into new classes in your i
 - Zipper.cls
 - ZipperTests.cls 
 
-#####Option 2: Install from Unmanaged Package
+####Option 2: Install from Unmanaged Package
 
 Follow this link to install the latest package:
 [link]
 
-#####Option 3: Use 'Deply to Salesforce' button
+####Option 3: Use 'Deply to Salesforce' button
 
 <a href="https://githubsfdeploy.herokuapp.com?owner=pdalcol&repo=Zipper">
   <img alt="Deploy to Salesforce"
