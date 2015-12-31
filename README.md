@@ -85,7 +85,7 @@ Returns a set of filenames from the current zip archive.
 ######Parameters
 Name       |    Type      |     Description
 -----------|--------------|--------
-**Return** | Set<String>  | Returns all file names including full path in the current zip archive
+**Return** | Set&lt;String&gt;  | Returns all file names including full path in the current zip archive
 ######Example
 ```Apex
 Attachment sampleAttachment = [SELECT Name, Body FROM Attachment WHERE Id='<ID_OF_ATTACHMENT>'];
@@ -126,7 +126,7 @@ Returns file metadata (crc32, fileSize, fileName, and fileComment).
 Name       |    Type            |     Description
 -----------|--------------------|--------
 fileName   | String             |  File name including full path
-**Return** | Map<String,String> |  Contains values for crc32, fileSize, fileName, and fileComment
+**Return** | Map&lt;String,String&gt; |  Contains values for crc32, fileSize, fileName, and fileComment
 
 ######Example
 ```Apex
