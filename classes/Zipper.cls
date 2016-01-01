@@ -34,39 +34,72 @@ public class Zipper
     {
         return zipFileMap.keySet();
     }
-    public static void unzipAttachment(Id srcAttId, Id destObjId, String[] fileNames, Boolean async){
-        Map<String,Object> params = new Map<String,Object>();
-        params.put('srcAttId', srcAttId);
-        params.put('destObjId', destObjId);
-        params.put('fileNames', fileNames);
-        //params.put('async', async);
+    public static void unzipAttachment(Id srcAttId, Id destObjId, String[] fileNames, Boolean attemptAsync){
+        
+        try {
+            if (attemptAsync && !System.isFuture() && !System.isBatch()
+                && Limits.getFutureCalls()<Limits.getLimitFutureCalls()){
+                unzipAttachmentAsync(srcAttId, destObjId, fileNames);
+                return;
+            }
+        } catch (Exception e){}
 
-        unzipAsync(JSON.serialize(params));
-    }
-
-    @future
-    private static void unzipAsync(String paramsStr){
-        Map<String,Object> params = (Map<String,Object>) JSON.deserializeUntyped(paramsStr);
-        Attachment src = [SELECT Id, ParentId, Name, Body FROM Attachment WHERE Id=:(Id)params.get('srcAttId')];
+        Attachment src = [SELECT ParentId, Body FROM Attachment WHERE Id=:srcAttId];
         Attachment[] Atts = new List<Attachment>();
 
         Zipper myZipper = new Zipper(src.Body);
 
-        if (params.get('fileNames') == null) {
-            params.put('fileNames', new List<String>(myZipper.getFileNames()));
+        if (destObjId == null){
+            destObjId = src.ParentId;
         }
 
-        for (Object fileName : (Object[])params.get('fileNames')) {
-            Atts.add( new Attachment (ParentId = (String)params.get('destObjId'),
-                                      Name = (String)fileName, 
-                                      Body = myZipper.getFile((String)fileName)));
+        if (fileNames == null){
+            fileNames = new List<String>(myZipper.getFileNames());
+        }
+        Blob attBody;
+        for (String fileName : fileNames) {
+            attBody = myZipper.getFile(fileName);
+            if (attBody != null ) {
+                Atts.add(new Attachment (ParentId = destObjId,
+                                      Name = fileName, 
+                                      Body = myZipper.getFile(fileName)));
+            }
+            attBody = null;
             //if (Limits.getHeapSize() >= .2 * Limits.getLimitHeapSize()){
-                insert Atts;
-                Atts.clear();
+            //    insert Atts;
+            //    Atts.clear();
             //}
         }
         insert Atts;
     }
+    @future
+    private static void unzipAttachmentAsync(Id srcAttId, Id destObjId, String[] fileNames){
+        unzipAttachment(srcAttId, destObjId, fileNames, false);        
+    }
+
+    //@future
+    //private static void unzipAsync(String paramsStr){
+    //    Map<String,Object> params = (Map<String,Object>) JSON.deserializeUntyped(paramsStr);
+    //    Attachment src = [SELECT Id, ParentId, Name, Body FROM Attachment WHERE Id=:(Id)params.get('srcAttId')];
+    //    Attachment[] Atts = new List<Attachment>();
+
+    //    Zipper myZipper = new Zipper(src.Body);
+
+    //    if (params.get('fileNames') == null) {
+    //        params.put('fileNames', new List<String>(myZipper.getFileNames()));
+    //    }
+
+    //    for (Object fileName : (Object[])params.get('fileNames')) {
+    //        Atts.add( new Attachment (ParentId = (String)params.get('destObjId'),
+    //                                  Name = (String)fileName, 
+    //                                  Body = myZipper.getFile((String)fileName)));
+    //        //if (Limits.getHeapSize() >= .2 * Limits.getLimitHeapSize()){
+    //            insert Atts;
+    //            Atts.clear();
+    //        //}
+    //    }
+    //    insert Atts;
+    //}
 
     public Blob getFile(String fileName)
     {

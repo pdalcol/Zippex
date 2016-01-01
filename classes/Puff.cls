@@ -797,12 +797,12 @@ public class Puff {
              //const unsigned char *source,   /* pointer to source data pointer */
              //unsigned long *sourcelen)      /* amount of input available */
     //@future
-    public static void test (){
+    //public static void test (){
 
-        String source='CB48CD29C840C25C00';//'F3C8E40200';//CB48CD29C840C25C00//01050099996562616670
-        Integer destlen = 17 ,srclen = source.length()/2;
-        (new Puff(source, srclen, destlen)).inflate();
-    }
+    //    String source='CB48CD29C840C25C00';//'F3C8E40200';//CB48CD29C840C25C00//01050099996562616670
+    //    Integer destlen = 17 ,srclen = source.length()/2;
+    //    (new Puff(source, srclen, destlen)).inflate();
+    //}
 
     public Puff(String source, Integer srclen, Integer destlen){
         /* initialize output state */
