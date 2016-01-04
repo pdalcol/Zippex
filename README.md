@@ -67,7 +67,7 @@ Name     | Type       | Description
 ---------|------------|--------
 fileName | String     | File name including full path
 fileData | Blob       | Data containing the file data
-crc32    | String     | **(optional)** little endian hex value of the CRC32.  Enter null value for addFileToZip to calculate the CRC32 of the fileData
+crc32    | String     | **(optional)** little endian hex value of the CRC32.  Enter null for addFileToZip to calculate the CRC32 of the fileData
 
 ######Example
 ```Apex
