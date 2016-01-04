@@ -867,7 +867,8 @@ public class Puff {
         //    sourcelen = s.incnt;
         //}
         
-        System.assert(err == 0);
+        System.assertEquals(0, err);
+        
         //System.debug('finished with code: '+err);
         //System.debug('out: '+ s.out); 
 
