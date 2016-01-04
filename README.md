@@ -66,8 +66,8 @@ Adds a new file to the current zip archive.
 Name     | Type       | Description
 ---------|------------|--------
 fileName | String     | File name including full path
-fileData | Blob       |  Data containing the file data
-crc32    | String     |  **(optional)**  must be hex little endian value of the CRC32.  Enter null value for addFileToZip to calculate the CRC32 of the fileData
+fileData | Blob       | Data containing the file data
+crc32    | String     | **(optional)** little endian hex value of the CRC32.  Enter null value for addFileToZip to calculate the CRC32 of the fileData
 
 ######Example
 ```Apex
@@ -84,9 +84,9 @@ public Set<String> getFileNames()
 ```
 Returns a set of filenames from the current zip archive.
 ######Parameters
-Name       | Type         | Description
------------|--------------|--------
-**Return** | Set&lt;String&gt;  | Returns all file names including full path in the current zip archive
+Name       | Type              | Description
+-----------|-------------------|--------
+**Return** | Set&lt;String&gt; | Returns all file names including full path in the current zip archive
 ######Example
 ```Apex
 Attachment sampleAttachment = [SELECT Name, Body FROM Attachment WHERE Id='<ID_OF_ATTACHMENT>'];
@@ -107,8 +107,8 @@ Extracts the specified file contents from the current zip archive.  If the file 
 ######Parameters
 Name      | Type       | Description
 ----------|------------|--------
-fileName  | String     |     File name including full path
-**Return**| Blob       |     File data
+fileName  | String     | File name including full path
+**Return**| Blob       | File data
 ######Example
 ```Apex
 Zipper sampleZip = new Zipper();
@@ -124,10 +124,10 @@ public Map<String,String> getFileInfo(String fileName)
 Returns file metadata (crc32, fileSize, fileName, and fileComment).
 
 ######Parameters
-Name       |    Type            | Description
------------|--------------------|--------
-fileName   | String             |  File name including full path
-**Return** | Map&lt;String,String&gt; |  Contains values for crc32, fileSize, fileName, and fileComment
+Name       |    Type                  | Description
+-----------|--------------------------|--------
+fileName   | String                   | File name including full path
+**Return** | Map&lt;String,String&gt; | Contains values for crc32, fileSize, fileName, and fileComment
 
 ######Example
 ```Apex
@@ -146,7 +146,7 @@ Returns a Blob that contains the entire Zip archive.
 ######Parameters
 Name       | Type       | Description
 -----------|------------|--------
-**Return** |      Blob  |  Full Zip archive data
+**Return** | Blob       | Full Zip archive data
 ######Example
 ```Apex
 Zipper sampleZip = new Zipper();
@@ -184,8 +184,8 @@ Renames a file in the current zip archive.
 ######Parameters
 Name     | Type       | Description
 ---------|------------|--------
-oldName  | String     |  The current file name to be modified
-newName  | String     |  The new name that replaces the current file name
+oldName  | String     | The current file name to be modified
+newName  | String     | The new name that replaces the current file name
 
 ######Example
 ```Apex
@@ -207,7 +207,7 @@ Removes the specified prefix from all file names in the curent Zip archive only 
 ######Parameters
 Name     | Type       | Description
 ---------|------------|--------
-prefix   |   String   |  The prefix to remove from file names
+prefix   | String     | The prefix to remove from file names
 ######Example
 ```Apex
 Zipper sampleZip = new Zipper();
@@ -225,12 +225,12 @@ public static void unzipAttachment(Id srcAttId, Id destObjId, String[] fileNames
 
 ```
 ######Parameters
-Name       | Type       | Description
------------|------------|--------
-srcAttId   | Id         |  ID of the attachment to unzip 
-destObjId  | Id         |  ID of the object to which unzipped files should be attached. If null the ParentId of the zip achive will be used
-fileNames  | String[]   |  List containing file names to uncompress.  If null, all files will be uncompressed
-async      | Boolean    |  If true, it attempts to unzip in a future call
+Name         | Type       | Description
+-------------|------------|--------
+srcAttId     | Id         | ID of the attachment to unzip 
+destObjId    | Id         | ID of the object to which unzipped files should be attached. If null the ParentId of the zip achive will be used
+fileNames    | String[]   | List containing file names to uncompress.  If null, all files will be uncompressed
+attemptAsync | Boolean    | If true, it attempts to unzip in a future call
 ######Example
 ```Apex
 Zipper.unzipAttachment('<ID_OF_ATTACHMENT>', null, null, false);
