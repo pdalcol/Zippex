@@ -1,13 +1,14 @@
 Copyright (c) 2015 Pedro Dal Col, Pliny Smith
 
 # zipper
-Native Apex zip/unzip utility for the salesforce.com platform.
+Native Apex zip utility for the salesforce.com platform.
 
 ###How to install
 
 ####Option 1: Manually save files to SF
 
 Copy and paste from this repository the following four classes into new classes in your Salesfoce instance. 
+
 1. HexUtil.cls
 2. Puff.cls
 3. Zipper.cls
