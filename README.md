@@ -230,7 +230,7 @@ Name         | Type       | Description
 srcAttId     | Id         | ID of the attachment to unzip 
 destObjId    | Id         | ID of the object to which unzipped files should be attached. If null the ParentId of the zip achive will be used
 fileNames    | String[]   | List containing file names to uncompress.  If null, all files will be uncompressed
-attemptAsync | Boolean    | If true, it attempts to unzip in a future call
+attemptAsync | Boolean    | If true, it attempts to unzip files in a future call
 ######Example
 ```Apex
 Zipper.unzipAttachment('<ID_OF_ATTACHMENT>', null, null, false);
