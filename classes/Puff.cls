@@ -4,13 +4,13 @@
 //Puff.cls based on Mark Adler's puff.c
 //
 public class Puff {
-    public final Integer MAXBITS = 15;             /* maximum bits in a code */
-    public final Integer MAXLCODES = 286;           /* maximum number of literal/length codes */
-    public final Integer MAXDCODES = 30;            /* maximum number of distance codes */
-    public final Integer MAXCODES = (MAXLCODES+MAXDCODES);  /* maximum codes lengths to read */
-    public final Integer FIXLCODES = 288;           /* number of fixed literal/length codes */
+    private final Integer MAXBITS = 15;             /* maximum bits in a code */
+    private final Integer MAXLCODES = 286;           /* maximum number of literal/length codes */
+    private final Integer MAXDCODES = 30;            /* maximum number of distance codes */
+    private final Integer MAXCODES = (MAXLCODES+MAXDCODES);  /* maximum codes lengths to read */
+    private final Integer FIXLCODES = 288;           /* number of fixed literal/length codes */
 
-    public Integer[] getIntArray(Integer size){
+    private Integer[] getIntArray(Integer size){
         //System.debug('Called getintArray. Size: '+size);
 
         return (Integer[]) JSON.deserialize('['+'0'.repeat(',',size) +']', Integer[].class);
@@ -22,7 +22,7 @@ public class Puff {
         //return arr;
     }
 
-    public Integer[] removeNElems(Integer[] arr, Integer n){
+    private Integer[] removeNElems(Integer[] arr, Integer n){
         Integer[] newArr = new List<Integer>(arr);
 
         for(Integer i = 0; i<n; i++){
@@ -33,7 +33,7 @@ public class Puff {
     }
 
     ///* input and output state */
-    public class State {
+    private class State {
         /* output state */
         public String out;         /* output buffer */
         public Integer outlen;       /* available space at out */
@@ -62,7 +62,7 @@ public class Puff {
      *   buffer, using shift right, and new bytes are appended to the top of the
      *   bit buffer, using shift left.
      */
-    public Integer bits(State s, Integer need)
+    private Integer bits(State s, Integer need)
     {
         Long val;           /* bit accumulator (can use up to 20 bits) */
         Integer incnt2;
@@ -92,7 +92,7 @@ public class Puff {
         return (Integer)(val & ((1L << need) - 1));
     }
 
-    Long hexToLong (String hexStr){
+    private Long hexToLong (String hexStr){
         //Integer[] intArr = hexStr.getChars();
 
         //if (String.isEmpty(hexStr)) return 0;
@@ -200,30 +200,30 @@ public class Puff {
      *   in the deflate format.  See the format notes for fixed() and dynamic().
      */
     //#ifdef SLOW
-    private Integer decodeSlow(State s, Huffman h) //Slow
-    {
-        //System.debug('called decode slow()');
+    //private Integer decodeSlow(State s, Huffman h) //Slow
+    //{
+    //    //System.debug('called decode slow()');
 
-        Integer len;            /* current number of bits in code */
-        Integer code;           /* len bits being decoded */
-        Integer first;          /* first code of length len */
-        Integer count;          /* number of codes of length len */
-        Integer index;          /* index of first code of length len in symbol table */
+    //    Integer len;            /* current number of bits in code */
+    //    Integer code;           /* len bits being decoded */
+    //    Integer first;          /* first code of length len */
+    //    Integer count;          /* number of codes of length len */
+    //    Integer index;          /* index of first code of length len in symbol table */
 
-        code = first = index = 0;
-        for (len = 1; len <= MAXBITS; len++) {
-            code |= bits(s, 1);             /* get next bit */
-            count = h.count[len];
-            if (code - count < first)       /* if length len, return symbol */
-                return h.symbol[index + (code - first)];
-            index += count;                 /* else update for next length */
-            first += count;
-            first <<= 1;
-            code <<= 1;
-        }
-        return -10;                         /* ran out of codes */
-    }
-
+    //    code = first = index = 0;
+    //    for (len = 1; len <= MAXBITS; len++) {
+    //        code |= bits(s, 1);             /* get next bit */
+    //        count = h.count[len];
+    //        if (code - count < first)       /* if length len, return symbol */
+    //            return h.symbol[index + (code - first)];
+    //        index += count;                 /* else update for next length */
+    //        first += count;
+    //        first <<= 1;
+    //        code <<= 1;
+    //    }
+    //    return -10;                         /* ran out of codes */
+    //}
+    
     /*
      * A faster version of decode() for real applications of this code.   It's not
      * as readable, but it makes puff() twice as fast.  And it only makes the code
@@ -797,12 +797,12 @@ public class Puff {
              //const unsigned char *source,   /* pointer to source data pointer */
              //unsigned long *sourcelen)      /* amount of input available */
     //@future
-    public static void test (){
+    //public static void test (){
 
-        String source='CB48CD29C840C25C00';//'F3C8E40200';//CB48CD29C840C25C00//01050099996562616670
-        Integer destlen = 17 ,srclen = source.length()/2;
-        (new Puff(source, srclen, destlen)).inflate();
-    }
+    //    String source='CB48CD29C840C25C00';//'F3C8E40200';//CB48CD29C840C25C00//01050099996562616670
+    //    Integer destlen = 17 ,srclen = source.length()/2;
+    //    (new Puff(source, srclen, destlen)).inflate();
+    //}
 
     public Puff(String source, Integer srclen, Integer destlen){
         /* initialize output state */
@@ -867,7 +867,8 @@ public class Puff {
         //    sourcelen = s.incnt;
         //}
         
-        System.assert(err == 0);
+        System.assertEquals(0, err);
+        
         //System.debug('finished with code: '+err);
         //System.debug('out: '+ s.out); 
 
