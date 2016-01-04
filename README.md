@@ -1,4 +1,5 @@
 Copyright (c) 2015 Pedro Dal Col, Pliny Smith
+
 # zipper
 Native Apex zip utility for the salesforce.com platform.
 
@@ -54,7 +55,7 @@ fileData | Blob       | Data containing a valid zip file
 Attachment sampleAttachment = [SELECT Name, Body FROM Attachment WHERE Id='<ID_OF_ATTACHMENT>'];
 Zipper sampleZip = new Zipper(sampleAttachment.Body);
 ```
-Public Methods:
+####Public Methods:
 ####addFileToZip(fileName, fileData, crc32)
 ```Apex
 public void addFileToZip(String fileName, Blob fileData, String crc32)
@@ -218,22 +219,22 @@ System.assert(sampleZip.getFileNames().contains('Folder/file.txt'));
 ```
 
 
-####unzipAttachment(srcAttId, destObjId, fileNames, async)
+####unzipAttachment(srcAttId, destObjId, fileNames, attemptAsync)
 ```Apex
-public static void unzipAttachment(Id srcAttId, Id destObjId, String[] fileNames, Boolean async)
+public static void unzipAttachment(Id srcAttId, Id destObjId, String[] fileNames, Boolean attemptAsync){
 
 ```
 ######Parameters
 Name       | Type       | Description
 -----------|------------|--------
 srcAttId   | Id         |  ID of the attachment to unzip 
-destObjId  | Id         |  ID of the object to which unzipped files should be attached
+destObjId  | Id         |  ID of the object to which unzipped files should be attached. If null the ParentId of the zip achive will be used
 fileNames  | String[]   |  List containing file names to uncompress.  If null, all files will be uncompressed
-async      | Boolean    |  If true, attempts to unzip in a future call
+async      | Boolean    |  If true, it attempts to unzip in a future call
 ######Example
 ```Apex
 Zipper.unzipAttachment('<ID_OF_ATTACHMENT>', null, null, false);
 ```
 
 
-###FAQ
+<!--###FAQ-->
