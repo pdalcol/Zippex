@@ -7,7 +7,7 @@ Native Apex zip utility for the salesforce.com platform.
 
 ####Option 1: Manually save files to SF
 
-Copy and paste from this repository the following four classes into new classes in your Salesfoce instance. 
+Copy and paste from this repository the following four classes into new classes in your Salesforce instance. 
 
 1. HexUtil.cls
 2. Puff.cls
@@ -19,7 +19,7 @@ Copy and paste from this repository the following four classes into new classes 
 Follow this link to install the latest package:
 [link]
 
-####Option 3: Use the 'Deply to Salesforce' button
+####Option 3: Use the 'Deploy to Salesforce' button
 
 <a href="https://githubsfdeploy.herokuapp.com?owner=pdalcol&repo=Zipper">
   <img alt="Deploy to Salesforce"
@@ -203,7 +203,7 @@ System.assert(sampleZip.getFileNames().contains('sampleFolder/changedName.txt'))
 public void removePrefix(String prefix)
 
 ```
-Removes the specified prefix from all file names in the curent Zip archive only if it occurs at the beginning of the file name.
+Removes the specified prefix from all file names in the current Zip archive only if it occurs at the beginning of the file name.
 ######Parameters
 Name     | Type       | Description
 ---------|------------|--------
@@ -228,7 +228,7 @@ public static void unzipAttachment(Id srcAttId, Id destObjId, String[] fileNames
 Name         | Type       | Description
 -------------|------------|--------
 srcAttId     | Id         | ID of the attachment to unzip 
-destObjId    | Id         | ID of the object to which unzipped files should be attached. If null the ParentId of the zip achive will be used
+destObjId    | Id         | ID of the object to which unzipped files should be attached. If null the ParentId of the zip archive will be used
 fileNames    | String[]   | List containing file names to uncompress.  If null, all files will be uncompressed
 attemptAsync | Boolean    | If true, it attempts to unzip files in a future call
 ######Example
