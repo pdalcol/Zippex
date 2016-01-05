@@ -434,7 +434,7 @@ public class Zipper
             fileName = zipFileString.substring(theStart*2, theEnd*2);// (f bytes)       Offset 30
             theStart = theEnd;
             theEnd = theStart + (Integer)HexUtil.hexToLongLE(extraFieldLength);
-            extraField = zipFileString.substring(theStart*2, theEnd * 2);// (e bytes)        Offset 30 + fileNameLength
+            extraField = zipFileString.substring(theStart*2, theEnd*2);// (e bytes)        Offset 30 + fileNameLength
             theStart = theEnd;
             theEnd = theStart + (Integer)HexUtil.hexToLongLE(compressedSize);
             compressedFileData = zipFileString.substring(theStart*2, theEnd*2);// (c bytes)        Offset 30 + fileNameLength + extraFieldLength
