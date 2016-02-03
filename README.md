@@ -14,12 +14,13 @@ Copy and paste from this repository the following four classes into new classes 
 3. Zipper.cls
 4. ZipperTests.cls 
 
+<!--
 ####Option 2: Install from Unmanaged Package
 
 Follow this link to install the latest package:
 [link]
-
-####Option 3: Use the 'Deploy to Salesforce' button
+-->
+####Option 2: Use the 'Deploy to Salesforce' button
 
 <a href="https://githubsfdeploy.herokuapp.com?owner=pdalcol&repo=Zipper">
   <img alt="Deploy to Salesforce"
