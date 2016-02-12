@@ -57,9 +57,9 @@ Attachment sampleAttachment = [SELECT Name, Body FROM Attachment WHERE Id='<ID_O
 Zipper sampleZip = new Zipper(sampleAttachment.Body);
 ```
 ####Public Methods:
-####addFileToZip(fileName, fileData, crc32)
+####addFile(fileName, fileData, crc32)
 ```Apex
-public void addFileToZip(String fileName, Blob fileData, String crc32)
+public void addFile(String fileName, Blob fileData, String crc32)
 ```
 Adds a new file to the current zip archive.
 
@@ -68,14 +68,14 @@ Name     | Type       | Description
 ---------|------------|--------
 fileName | String     | File name including full path
 fileData | Blob       | Data containing the file data
-crc32    | String     | **(optional)** little endian hex value of the CRC32.  Enter null for addFileToZip to calculate the CRC32 of the fileData
+crc32    | String     | **(optional)** little endian hex value of the CRC32.  Enter null for addFile to calculate the CRC32 of the fileData
 
 ######Example
 ```Apex
 Zipper sampleZip = new Zipper();
 Blob fileData = Blob.valueOf('Sample text.');
-sampleZip.addFileToZip('sampleFolder/test.txt', fileData, null);
-Blob zipData = sampleZip.getZipFile();
+sampleZip.addFile('sampleFolder/test.txt', fileData, null);
+Blob zipData = sampleZip.getZipArchive();
 ```
 
 
@@ -113,7 +113,7 @@ fileName  | String     | File name including full path
 ######Example
 ```Apex
 Zipper sampleZip = new Zipper();
-sampleZip.addFileToZip('sampleFolder/test.txt', Blob.valueOf('Sample text.'), null);
+sampleZip.addFile('sampleFolder/test.txt', Blob.valueOf('Sample text.'), null);
 Blob fileData = sampleZip.getFile('sampleFolder/test.txt');
 System.assertEquals ('Sample text.', fileData.toString());
 ```
@@ -133,13 +133,13 @@ fileName   | String                   | File name including full path
 ######Example
 ```Apex
 Zipper sampleZip = new Zipper();
-sampleZip.addFileToZip('sampleFolder/test.txt', Blob.valueOf('Sample text.'), null);
+sampleZip.addFile('sampleFolder/test.txt', Blob.valueOf('Sample text.'), null);
 Map <String, String> fileInfoMap = sampleZip.getFileInfo('sampleFolder/test.txt');
 System.assertEquals ('12', fileInfoMap.get('fileSize'));
 System.assertEquals ('sampleFolder/test.txt', fileInfoMap.get('fileName'));
 ```
 
-####getZipFile()
+####getZipArchive()
 ```Apex
 public Blob getZipFile()
 ```
@@ -151,13 +151,13 @@ Name       | Type       | Description
 ######Example
 ```Apex
 Zipper sampleZip = new Zipper();
-sampleZip.addFileToZip('sampleFolder/test.txt', Blob.valueOf('Sample text.'), null);
-Blob zipData = sampleZip.getZipFile();
+sampleZip.addFile('sampleFolder/test.txt', Blob.valueOf('Sample text.'), null);
+Blob zipData = sampleZip.getZipArchive();
 ```
 
-####removeFileFromZip(fileName)
+####removeFile(fileName)
 ```Apex
-public void removeFileFromZip(String fileName)
+public void removeFile(String fileName)
 ```
 Removes a file from the current zip archive.
 ######Parameters
@@ -167,11 +167,11 @@ fileName | String     | File name to remove from zip archive including full path
 ######Example
 ```Apex
 Zipper sampleZip = new Zipper();
-sampleZip.addFileToZip('sampleFolder/file1.txt', Blob.valueOf('Sample text1.'), null);
-sampleZip.addFileToZip('sampleFolder/file2.txt', Blob.valueOf('Sample text2.'), null);
+sampleZip.addFile('sampleFolder/file1.txt', Blob.valueOf('Sample text1.'), null);
+sampleZip.addFile('sampleFolder/file2.txt', Blob.valueOf('Sample text2.'), null);
 System.assert(sampleZip.getFileNames().contains('sampleFolder/file1.txt'));
 System.assert(sampleZip.getFileNames().contains('sampleFolder/file2.txt'));
-sampleZip.removeFileFromZip('sampleFolder/file1.txt');
+sampleZip.removeFile('sampleFolder/file1.txt');
 System.assert(sampleZip.getFileNames().contains('sampleFolder/file1.txt') == false);
 System.assert(sampleZip.getFileNames().contains('sampleFolder/file2.txt'));
 ```
@@ -191,7 +191,7 @@ newName  | String     | The new name that replaces the current file name
 ######Example
 ```Apex
 Zipper sampleZip = new Zipper();
-sampleZip.addFileToZip('sampleFolder/file.txt', Blob.valueOf('Sample text1.'), null);
+sampleZip.addFile('sampleFolder/file.txt', Blob.valueOf('Sample text1.'), null);
 System.assert(sampleZip.getFileNames().contains('sampleFolder/file.txt'));
 sampleZip.renameFile('sampleFolder/file.txt', 'sampleFolder/changedName.txt');
 System.assert(sampleZip.getFileNames().contains('sampleFolder/file.txt') == false);
@@ -212,7 +212,7 @@ prefix   | String     | The prefix to remove from file names
 ######Example
 ```Apex
 Zipper sampleZip = new Zipper();
-sampleZip.addFileToZip('sampleFolder/file.txt', Blob.valueOf('Sample text1.'), null);
+sampleZip.addFile('sampleFolder/file.txt', Blob.valueOf('Sample text1.'), null);
 System.assert(sampleZip.getFileNames().contains('sampleFolder/file.txt'));
 sampleZip.removePrefix('sample');
 System.assert(sampleZip.getFileNames().contains('sampleFolder/file.txt') == false);

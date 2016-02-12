@@ -11,15 +11,8 @@ public class Puff {
     private final Integer FIXLCODES = 288;           /* number of fixed literal/length codes */
 
     private Integer[] getIntArray(Integer size){
-        //System.debug('Called getintArray. Size: '+size);
 
         return (Integer[]) JSON.deserialize('['+'0'.repeat(',',size) +']', Integer[].class);
-
-        //Integer[] arr = new List<Integer>();
-        //for (Integer i=0; i<=size; i++){
-        //    arr.add(0);
-        //}
-        //return arr;
     }
 
     private Integer[] removeNElems(Integer[] arr, Integer n){

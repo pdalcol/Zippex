@@ -22,13 +22,6 @@ private class ZipperTests
         System.assertEquals(HexUtil.CRC32Table(Blob.valueOf(testData)) , expectedCRC32);
         System.assertEquals(HexUtil.CRC32Table(EncodingUtil.convertToHex(Blob.valueOf(testData))) , expectedCRC32);
 
-        // public static Integer hexToInt(String hexStr)
-        //System.assertEquals(HexUtil.hexToInt('ffffffff'),(Integer)(4294967295L));
-        //System.assertEquals(HexUtil.hexToInt('fffffffe'),(Integer)(4294967294L));
-        //System.assertEquals(HexUtil.hexToInt('7fffffff'),(Integer)(2147483647 ));
-        //System.assertEquals(HexUtil.hexToInt('80000000'),(Integer)(2147483648L));
-        //System.assertEquals(HexUtil.hexToInt('00000000'),(Integer)(0));
-
         // public static Long hexToLongLE(String hexString)
         System.assertEquals(HexUtil.hexToLongLE('ffffffff'),4294967295L);
         System.assertEquals(HexUtil.hexToLongLE('feffffff'),4294967294L);
@@ -55,7 +48,7 @@ private class ZipperTests
         System.assertEquals(testZipper.getFileNames(), new Set<String>{'text.txt'});
         System.assertEquals(testZipper.getFile('text.txt').toString(), 'Hi\n');
         
-        testZipper.addFileToZip('newDir/added.txt',Blob.valueOf('new data\n'), null);
+        testZipper.addFile('newDir/added.txt',Blob.valueOf('new data\n'), null);
         System.assertEquals(testZipper.getFileNames(), new Set<String>{'text.txt','newDir/added.txt'});
         System.assertEquals(testZipper.getFile('newDir/added.txt').toString(), 'new data\n');
         
@@ -65,42 +58,25 @@ private class ZipperTests
         testZipper.removePrefix('newDir/');
         System.assertEquals(testZipper.getFileNames(), new Set<String>{'changedName.txt','added.txt'});
 
-        testZipper.addFileToZip('added.txt',Blob.valueOf('even newer data\n'), null);
+        testZipper.addFile('added.txt',Blob.valueOf('even newer data\n'), null);
         System.assertEquals(testZipper.getFileNames(), new Set<String>{'changedName.txt','added.txt'});
         System.assertEquals(testZipper.getFile('added.txt').toString(), 'even newer data\n');
         
-        testZipper.removeFileFromZip('notHere.txt');
+        testZipper.removeFile('notHere.txt');
         System.assertEquals(testZipper.getFileNames(), new Set<String>{'changedName.txt','added.txt'});
 
-        testZipper.addFileToZip('secondAdd.txt',Blob.valueOf('important\n'), null);
-        testZipper.addFileToZip('thirdAdd.txt',Blob.valueOf('less important\n'), null);
-        testZipper.removeFileFromZip('changedName.txt');
+        testZipper.addFile('secondAdd.txt',Blob.valueOf('important\n'), null);
+        testZipper.addFile('thirdAdd.txt',Blob.valueOf('less important\n'), null);
+        testZipper.removeFile('changedName.txt');
         System.assertEquals(testZipper.getFileNames(), new Set<String>{'added.txt','secondAdd.txt', 'thirdAdd.txt'});
 
-        Blob newTinyZip = testZipper.getZipFile();
+        Blob newTinyZip = testZipper.getZipArchive();
         Zipper newTestZipper = new Zipper(newTinyZip);
         System.assertEquals(newTestZipper.getFileNames(), new Set<String>{'added.txt','secondAdd.txt', 'thirdAdd.txt'});
         System.assertEquals(testZipper.getFile('added.txt').toString(), 'even newer data\n');
         
-        newTestZipper.removeFileFromZip('added.txt');
+        newTestZipper.removeFile('added.txt');
         System.assertEquals(newTestZipper.getFileNames(), new Set<String>{'secondAdd.txt', 'thirdAdd.txt'});
-
-        //public    Zipper()
-        //public    Zipper(Blob fileData)
-
-        //public    void addFileToZip(String fileName, Blob fileData, String crc32)
-
-        //private   static Integer getCurrentDate()
-        //private   static Integer getCurrentTime()
-        //public    Blob getFile(String fileName)
-        //public    Set getFileNames()
-        //public    Blob getZipFile()
-        //private   void recalculateCentralDirOffsets(Integer offset, Integer delta)
-        //public    void removeFileFromZip(String fileName)
-        //public    void removePrefix(String prefix)
-        //public    void renameFile(String oldName, String newName)
-        //private   static void unzipAsync(String paramsStr)
-        //public    static void unzipAttachment(Id srcAttId, Id destObjId, List fileNames, Boolean async)
 
     }
 
