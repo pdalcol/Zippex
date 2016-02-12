@@ -141,7 +141,7 @@ System.assertEquals ('sampleFolder/test.txt', fileInfoMap.get('fileName'));
 
 ####getZipArchive()
 ```Apex
-public Blob getZipFile()
+public Blob getZipArchive()
 ```
 Returns a Blob that contains the entire Zip archive.
 ######Parameters
