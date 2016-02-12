@@ -410,7 +410,7 @@ public class Zipper
         theEnd = theStart + (Integer)HexUtil.hexToLongLE(fileCommentLength);
         fileComment = zipFileString.substring(theStart*2, theEnd*2);// (c bytes)        Offset 46 + fileNameLength + extraFieldLength
         c_offsetToNextRecord = theEnd;
-        fileDataInZipStr = true; //true beacause we are reading an existing zip file
+        fileDataInZipStr = true; //true because we are reading an existing zip file
         //System.debug(this);
         }
         
