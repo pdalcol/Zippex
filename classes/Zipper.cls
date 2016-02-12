@@ -79,30 +79,6 @@ public class Zipper
         unzipAttachment(srcAttId, destObjId, fileNames, false);        
     }
 
-    //@future
-    //private static void unzipAsync(String paramsStr){
-    //    Map<String,Object> params = (Map<String,Object>) JSON.deserializeUntyped(paramsStr);
-    //    Attachment src = [SELECT Id, ParentId, Name, Body FROM Attachment WHERE Id=:(Id)params.get('srcAttId')];
-    //    Attachment[] Atts = new List<Attachment>();
-
-    //    Zipper myZipper = new Zipper(src.Body);
-
-    //    if (params.get('fileNames') == null) {
-    //        params.put('fileNames', new List<String>(myZipper.getFileNames()));
-    //    }
-
-    //    for (Object fileName : (Object[])params.get('fileNames')) {
-    //        Atts.add( new Attachment (ParentId = (String)params.get('destObjId'),
-    //                                  Name = (String)fileName, 
-    //                                  Body = myZipper.getFile((String)fileName)));
-    //        //if (Limits.getHeapSize() >= .2 * Limits.getLimitHeapSize()){
-    //            insert Atts;
-    //            Atts.clear();
-    //        //}
-    //    }
-    //    insert Atts;
-    //}
-
     // Extracts the specified file contents from the current zip archive.  If the file does not exist, returns null.
     public Blob getFile(String fileName)
     {
@@ -120,12 +96,6 @@ public class Zipper
         }
         else if (tempFileObject.compressionMethod == '0800') //DEFLATED
         {
-            //String dest='';
-            //source='CB48CD29C840C25C00';//'F3C8E40200';//
-            //Integer destlen = 17 ,srclen = source.length()/2;
-
-            //(new Puff(source, srclen, destlen)).inflate();
-
             return EncodingUtil.convertFromHex(new Puff(tempFileObject.compressedFileData,
                              (Integer)HexUtil.hexToLongLE(tempFileObject.compressedSize),
                              (Integer)HexUtil.hexToLongLE(tempFileObject.uncompressedSize)).inflate());
@@ -183,7 +153,7 @@ public class Zipper
     }
 
     // Returns a Blob that contains the entire Zip archive.
-    public Blob getZipFile()
+    public Blob getZipArchive()
     {
         Integer zipFileSize;
 
@@ -221,7 +191,7 @@ public class Zipper
     }
 
     // Removes a file from the current zip archive.
-    public void removeFileFromZip(String fileName){
+    public void removeFile(String fileName){
 
         if(!zipFileMap.containsKey(fileName)) {return;}
 
@@ -230,8 +200,7 @@ public class Zipper
         if(tempFileObject.fileDataInZipStr) {
             Integer offsetOfLH = (Integer)HexUtil.hexToLongLE(tempFileObject.offsetOfLH);
             tempFileObject.readLocalFileHeader(zipFileString, offsetOfLH);
-            //System.debug('offset LH: '+offsetOfLH+' size LH xx  -- fileNameLength '+tempFileObject.fileNameLength+' extraFieldLength '+tempFileObject.extraFieldLength+' compressedSize '+tempFileObject.compressedSize);
-            //System.debug('offset Next rec: '+tempFileObject.l_offsetToNextRecord);
+
             zipFileString = zipFileString.left(offsetOfLH*2) + zipFileString.substring(tempFileObject.l_offsetToNextRecord*2); 
             recalculateCentralDirOffsets(offsetOfLH, offsetOfLH - tempFileObject.l_offsetToNextRecord );
         }
@@ -251,11 +220,11 @@ public class Zipper
     }
 
     //  Adds a new file to the current zip archive.
-    public void addFileToZip(String fileName, Blob fileData, String crc32)
+    public void addFile(String fileName, Blob fileData, String crc32)
     {
 
         if(zipFileMap.containsKey(fileName)){
-            removeFileFromZip(fileName);
+            removeFile(fileName);
         }
 
         FileObject tempFileObject = new FileObject();
@@ -381,9 +350,9 @@ public class Zipper
         {
         offset *= 2;
 
-        creatorVersion      = zipFileString.mid(offset+4*2,  2*2); // (2 bytes) likely Windows NT  Offset 4
-        minExtractorVersion = zipFileString.mid(offset+6*2,  2*2); // (2 bytes) likely Windows NT  Offset 6
-        gPFlagBit           = zipFileString.mid(offset+8*2,  2*2); // (2 bytes) general purpose flag bit  Offset 8
+        creatorVersion      = zipFileString.mid(offset+4*2,  2*2);// (2 bytes) likely Windows NT  Offset 4
+        minExtractorVersion = zipFileString.mid(offset+6*2,  2*2);// (2 bytes) likely Windows NT  Offset 6
+        gPFlagBit           = zipFileString.mid(offset+8*2,  2*2);// (2 bytes) general purpose flag bit  Offset 8
         compressionMethod   = zipFileString.mid(offset+10*2, 2*2);// (2 bytes) no compression  Offset 10
         lastModTime         = zipFileString.mid(offset+12*2, 2*2);// (2 bytes)   Offset 12
         lastModDate         = zipFileString.mid(offset+14*2, 2*2);// (2 bytes)   Offset 14
@@ -419,9 +388,9 @@ public class Zipper
         {
             Integer strOffset = offset *2;
 
-            minExtractorVersion  = zipFileString.mid(strOffset+4*2,  2*2); // (2 bytes) likely Windows NT  Offset 4
-            gPFlagBit            = zipFileString.mid(strOffset+6*2,  2*2); // (2 bytes) general purpose flag bit  Offset 6
-            compressionMethod    = zipFileString.mid(strOffset+8*2,  2*2); // (2 bytes) no compression  Offset 8
+            minExtractorVersion  = zipFileString.mid(strOffset+4*2,  2*2);// (2 bytes) likely Windows NT  Offset 4
+            gPFlagBit            = zipFileString.mid(strOffset+6*2,  2*2);// (2 bytes) general purpose flag bit  Offset 6
+            compressionMethod    = zipFileString.mid(strOffset+8*2,  2*2);// (2 bytes) no compression  Offset 8
             lastModTime          = zipFileString.mid(strOffset+10*2, 2*2);// (2 bytes)  Offset 10
             lastModDate          = zipFileString.mid(strOffset+12*2, 2*2);// (2 bytes)  Offset 12
             
@@ -458,7 +427,6 @@ public class Zipper
                 l_offsetToNextRecord /= 2;
                 l_offsetToNextRecord += 16; 
             }
-            //System.debug('local file header ' + this);
         }
 
         public String assembleLocalFileHeader()
