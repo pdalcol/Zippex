@@ -3,6 +3,11 @@ Copyright (c) 2015 Pedro Dal Col, Pliny Smith
 # zipper
 Native Apex zip utility for the salesforce.com platform.
 
+###Table of Contents
+  * [How to install](#How-to-install)
+  * [How to Use](#How-to-use)
+  * [Zipper](#zipper)
+
 ###How to install
 
 ####Option 1: Manually save files to SF

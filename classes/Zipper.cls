@@ -114,6 +114,8 @@ public class Zipper
         FileObject tmpFO = zipFileMap.get(fileName);
 
         /////Add last mod DateTime too
+        fileInfo.put('lastModDateTime', String.valueOf(getLastModDateTime((Integer)HexUtil.hexToLOngLE(tmpFO.lastModDate), (Integer)HexUtil.hexToLOngLE(tmpFO.lastModTime))));
+
         //fileInfo.put('lastModTime', lastModTime);
         //fileInfo.put('lastModDate', lastModDate);
         fileInfo.put('crc32', tmpFO.crc32);
@@ -310,6 +312,26 @@ public class Zipper
     
         return zipDateStamp;
     }
+
+    public static DateTime getLastModDateTime (Integer lastModDate, Integer lastModtime)
+    {
+        Integer year, month, day, hour, minute, second;
+        day = lastModDate & 31;
+        lastModDate >>>= 5;
+        month = lastModDate & 15;
+        lastModDate >>>= 4;
+        year = lastModDate + 1980;
+
+        second = (lastModTime & 31) * 2;
+        lastModTime >>>= 5;
+        minute = lastModTime & 63;
+        lastModTime >>>= 6;
+        hour = lastModTime;
+
+        return DateTime.newInstance(year, month, day, hour, minute, second);
+    }
+
+
 
     public class FileObject
     {
