@@ -10,7 +10,7 @@ Native Apex zip utility for the salesforce.com platform.
     * [Zipper()](#zipper-1)
     * [Zipper(fileData)](#zipperfiledata)
 * [Public Methods](#public-methods)
-    * [addFile(fileName, fileData, crc32)](#addfilefileName-fileData-crc32)
+    * [addFile(fileName, fileData, crc32)](#addfilefileName-filedata-crc32)
     * [getFileNames()](#getfilenames)
     * [getFile(fileName)](#getfilefilename)
   	* [getFileInfo(fileName)](#getfileinfofilename)
