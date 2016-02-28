@@ -3,6 +3,23 @@ Copyright (c) 2015 Pedro Dal Col, Pliny Smith
 # zipper
 Native Apex zip utility for the salesforce.com platform.
 
+###Table of Contents
+* [How to install](#how-to-install)
+* [Constructors](#constructors)
+    * [Zipper()](#zipper-1)
+    * [Zipper(fileData)](#zipperfiledata)
+* [Public Methods](#public-methods)
+    * [addFile(fileName, fileData, crc32)](#addfilefilename-filedata-crc32)
+    * [getFileNames()](#getfilenames)
+    * [getFile(fileName)](#getfilefilename)
+  	* [getFileInfo(fileName)](#getfileinfofilename)
+    * [getZipArchive()](#getziparchive)
+    * [removeFile(fileName)](#removefilefilename)
+    * [renameFile(oldName, newName)](#renamefileoldname-newname)
+    * [removePrefix(prefix)](#removeprefixprefix)
+    * [unzipAttachment(srcAttId, destObjId, fileNames, attemptAsync)](#unzipattachmentsrcattid-destobjid-filenames-attemptasync)
+
+
 ###How to install
 
 ####Option 1: Manually save files to SF
