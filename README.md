@@ -5,7 +5,6 @@ Native Apex zip utility for the salesforce.com platform.
 
 ###Table of Contents
 * [How to install](#how-to-install)
-* [How to Use](#how-to-use)
 * [Constructors](#constructors)
     * [Zipper()](#zipper-1)
     * [Zipper(fileData)](#zipperfiledata)
