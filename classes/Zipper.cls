@@ -34,8 +34,14 @@ public class Zipper
     //  Returns a set of filenames from the current zip archive.
     public Set<String> getFileNames()
     {
-        return zipFileMap.keySet();
+        return zipFileMap.keySet().clone();
     }
+
+    public Boolean containsFile(String fileName)
+    {
+        return zipFileMap.containsKey(fileName);
+    }
+
     public static void unzipAttachment(Id srcAttId, Id destObjId, String[] fileNames, Boolean attemptAsync){
         
         try {
