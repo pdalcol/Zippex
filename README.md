@@ -1,6 +1,6 @@
 Copyright (c) 2015 Pedro Dal Col, Pliny Smith
 
-# zipper
+# Zippex (aka Zipper)
 Native Apex zip utility for the salesforce.com platform.
 
 ###Table of Contents
