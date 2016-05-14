@@ -1,7 +1,7 @@
 Copyright (c) 2015 Pedro Dal Col, Pliny Smith
 
 # Zippex (aka Zipper)
-Native Apex zip utility for the salesforce.com platform.
+Native Apex Zip utility for the salesforce.com platform.
 
 ###Table of Contents
 * [How to install](#how-to-install)
@@ -10,6 +10,7 @@ Native Apex zip utility for the salesforce.com platform.
     * [Zipper(fileData)](#zipperfiledata)
 * [Public Methods](#public-methods)
     * [addFile(fileName, fileData, crc32)](#addfilefilename-filedata-crc32)
+    * [containsFile()](#containsfilefilename)
     * [getFileNames()](#getfilenames)
     * [getFile(fileName)](#getfilefilename)
   	* [getFileInfo(fileName)](#getfileinfofilename)
@@ -103,10 +104,10 @@ public Boolean containsFile(String fileName)
 Returns true if the current zip archive contains the specified file.
 
 ######Parameters
-Name     | Type       | Description
----------|------------|--------
-fileName | String     | File name including full path
-
+Name      | Type       | Description
+----------|------------|--------
+fileName  | String     | File name including full path
+**Return**| Boolean    | Return true if file is in Zip archive
 ######Example
 ```Apex
 Zipper sampleZip = new Zipper();
