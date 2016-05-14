@@ -98,7 +98,7 @@ Blob zipData = sampleZip.getZipArchive();
 
 ####containsFile(fileName)
 ```Apex
-public void containsFile(String fileName)
+public Boolean containsFile(String fileName)
 ```
 Returns true if the current zip archive contains the specified file.
 
