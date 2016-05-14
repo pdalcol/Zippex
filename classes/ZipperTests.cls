@@ -22,12 +22,12 @@ private class ZipperTests
         System.assertEquals(HexUtil.CRC32Table(Blob.valueOf(testData)) , expectedCRC32);
         System.assertEquals(HexUtil.CRC32Table(EncodingUtil.convertToHex(Blob.valueOf(testData))) , expectedCRC32);
 
-        // public static Long hexToLongLE(String hexString)
-        System.assertEquals(HexUtil.hexToLongLE('ffffffff'),4294967295L);
-        System.assertEquals(HexUtil.hexToLongLE('feffffff'),4294967294L);
-        System.assertEquals(HexUtil.hexToLongLE('ffffff7f'),2147483647 );
-        System.assertEquals(HexUtil.hexToLongLE('00000080'),2147483648L);
-        System.assertEquals(HexUtil.hexToLongLE('00000000'),0);
+        // public static Integer hexToIntLE(String hexString)
+        System.assertEquals(HexUtil.hexToIntLE('ffffffff'),(Integer)(4294967295L));
+        System.assertEquals(HexUtil.hexToIntLE('feffffff'),(Integer)(4294967294L));
+        System.assertEquals(HexUtil.hexToIntLE('ffffff7f'),(Integer)(2147483647 ));
+        System.assertEquals(HexUtil.hexToIntLE('00000080'),(Integer)(2147483648L));
+        System.assertEquals(HexUtil.hexToIntLE('00000000'),0);
 
         // public static String intToHexLE(Integer decNumber, Integer sizeInBytes)
         System.assertEquals(HexUtil.intToHexLE((Integer)(4294967295L),4),'ffffffff');
