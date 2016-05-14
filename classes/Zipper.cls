@@ -17,11 +17,11 @@ public class Zipper
         zipFileString = EncodingUtil.convertToHex(fileData);
         Integer offsetOfEndCentralDirSignature = zipFileString.lastIndexOf(endCentralDirSignature);
         
-        Integer numberOfFiles = (Integer)HexUtil.hexToLongLE(zipFileString.mid(offsetOfEndCentralDirSignature+10*2, 2*2));    //offset 10, 2 bytes
+        Integer numberOfFiles = HexUtil.hexToIntLE(zipFileString.mid(offsetOfEndCentralDirSignature+10*2, 2*2));    //offset 10, 2 bytes
         
         offsetOfStartOfCentralDir = zipFileString.mid(offsetOfEndCentralDirSignature+16*2, 4*2); // 4 bytes
         
-        Integer offset = (Integer)HexUtil.hexToLongLE(offsetOfStartOfCentralDir);
+        Integer offset = HexUtil.hexToIntLE(offsetOfStartOfCentralDir);
         
         for (Integer fileLoop = 0; fileLoop < numberOfFiles; fileLoop++)
         {
@@ -94,7 +94,7 @@ public class Zipper
         FileObject tempFileObject = zipFileMap.get(fileName);
 
         if (tempFileObject.fileDataInZipStr) {
-            tempFileObject.readLocalFileHeader(zipFileString, (Integer)HexUtil.hexToLongLE( tempFileObject.offsetOfLH));
+            tempFileObject.readLocalFileHeader(zipFileString, HexUtil.hexToIntLE( tempFileObject.offsetOfLH));
         }
 
         if (tempFileObject.compressionMethod == '0000')
@@ -104,8 +104,8 @@ public class Zipper
         else if (tempFileObject.compressionMethod == '0800') //DEFLATED
         {
             return EncodingUtil.convertFromHex(new Puff(tempFileObject.compressedFileData,
-                             (Integer)HexUtil.hexToLongLE(tempFileObject.compressedSize),
-                             (Integer)HexUtil.hexToLongLE(tempFileObject.uncompressedSize)).inflate());
+                             HexUtil.hexToIntLE(tempFileObject.compressedSize),
+                             HexUtil.hexToIntLE(tempFileObject.uncompressedSize)).inflate());
         }
         else {
             //System.assert(false,'Unsupported compression method: ' + tempFileObject.compressionMethod);
@@ -120,9 +120,9 @@ public class Zipper
 
         FileObject tmpFO = zipFileMap.get(fileName);
 
-        fileInfo.put('lastModDateTime', String.valueOf(getLastModDateTime((Integer)HexUtil.hexToLOngLE(tmpFO.lastModDate), (Integer)HexUtil.hexToLOngLE(tmpFO.lastModTime))));
+        fileInfo.put('lastModDateTime', String.valueOf(getLastModDateTime(HexUtil.hexToIntLE(tmpFO.lastModDate), HexUtil.hexToIntLE(tmpFO.lastModTime))));
         fileInfo.put('crc32', tmpFO.crc32);
-        fileInfo.put('fileSize', String.valueOf( HexUtil.hexToLongLE(tmpFO.uncompressedSize)));
+        fileInfo.put('fileSize', String.valueOf( HexUtil.hexToIntLE(tmpFO.uncompressedSize)));
         fileInfo.put('fileName',  EncodingUtil.convertFromHex(tmpFO.fileName).toString());
         fileInfo.put('fileComment', EncodingUtil.convertFromHex(tmpFO.fileComment).toString());
 
@@ -163,7 +163,7 @@ public class Zipper
         Integer zipFileSize;
 
         // delete central directory and end of Central directory
-        zipFileString = zipFileString.left((Integer)HexUtil.hexToLongLE(offsetOfStartOfCentralDir)*2);
+        zipFileString = zipFileString.left(HexUtil.hexToIntLE(offsetOfStartOfCentralDir)*2);
 
         //Writing Local Headers and data for each file not already in zip
         zipfileSize = zipFileString.length()/2;
@@ -203,7 +203,7 @@ public class Zipper
         FileObject tempFileObject = zipFileMap.get(fileName);
 
         if(tempFileObject.fileDataInZipStr) {
-            Integer offsetOfLH = (Integer)HexUtil.hexToLongLE(tempFileObject.offsetOfLH);
+            Integer offsetOfLH = HexUtil.hexToIntLE(tempFileObject.offsetOfLH);
             tempFileObject.readLocalFileHeader(zipFileString, offsetOfLH);
 
             zipFileString = zipFileString.left(offsetOfLH*2) + zipFileString.substring(tempFileObject.l_offsetToNextRecord*2); 
@@ -217,11 +217,11 @@ public class Zipper
     
         for (FileObject tempFileObject : zipFileMap.values()){
 
-            if(tempFileObject.fileDataInZipStr && HexUtil.hexToLongLE(tempFileObject.offsetOfLH) > offset){
-                tempFileObject.offsetOfLH = HexUtil.intToHexLE((Integer)HexUtil.hexToLongLE(tempFileObject.offsetOfLH) + delta, 4);
+            if(tempFileObject.fileDataInZipStr && HexUtil.hexToIntLE(tempFileObject.offsetOfLH) > offset){
+                tempFileObject.offsetOfLH = HexUtil.intToHexLE(HexUtil.hexToIntLE(tempFileObject.offsetOfLH) + delta, 4);
             }
         }
-        offsetOfStartOfCentralDir = HexUtil.intToHexLE((Integer)HexUtil.hexToLongLE(offsetOfStartOfCentralDir) + delta , 4);
+        offsetOfStartOfCentralDir = HexUtil.intToHexLE(HexUtil.hexToIntLE(offsetOfStartOfCentralDir) + delta , 4);
     }
 
     //  Adds a new file to the current zip archive.
@@ -272,7 +272,7 @@ public class Zipper
 
             System.assert(zipFileString.contains(oldDataStr));
             zipFileString = zipFileString.replace(oldDataStr, newDataStr);
-            recalculateCentralDirOffsets((Integer)HexUtil.hexToLongLE(fileObj.offsetOfLH), newNameHex.length()/2-oldNameHex.length()/2);
+            recalculateCentralDirOffsets(HexUtil.hexToIntLE(fileObj.offsetOfLH), newNameHex.length()/2-oldNameHex.length()/2);
         }
 
         fileObj.fileName = newNameHex;
@@ -395,13 +395,13 @@ public class Zipper
         offset /= 2;
 
         Integer theStart = offset+46;
-        Integer theEnd = theStart + (Integer)HexUtil.hexToLongLE(fileNameLength);
+        Integer theEnd = theStart + HexUtil.hexToIntLE(fileNameLength);
         fileName = zipFileString.substring(theStart*2, theEnd*2);// (f bytes)       Offset 46
         theStart = theEnd;
-        theEnd = theStart + (Integer)HexUtil.hexToLongLE(extraFieldLength);
+        theEnd = theStart + HexUtil.hexToIntLE(extraFieldLength);
         extraField = zipFileString.substring(theStart*2, theEnd * 2);// (e bytes)        Offset 46 + fileNameLength
         theStart = theEnd;
-        theEnd = theStart + (Integer)HexUtil.hexToLongLE(fileCommentLength);
+        theEnd = theStart + HexUtil.hexToIntLE(fileCommentLength);
         fileComment = zipFileString.substring(theStart*2, theEnd*2);// (c bytes)        Offset 46 + fileNameLength + extraFieldLength
         c_offsetToNextRecord = theEnd;
         fileDataInZipStr = true; //true because we are reading an existing zip file
@@ -420,7 +420,7 @@ public class Zipper
             lastModDate          = zipFileString.mid(strOffset+12*2, 2*2);// (2 bytes)  Offset 12
             
             //System.debug('gPFlagBit '+gPFlagBit);
-            if ((HexUtil.hexToLongLE(gPFlagBit.left(2)) & 8 ) == 0) {
+            if ((HexUtil.hexToIntLE(gPFlagBit.left(2)) & 8 ) == 0) {
                 crc32            = zipFileString.mid(strOffset+14*2, 4*2);// (4 bytes)  Offset 14
                 compressedSize   = zipFileString.mid(strOffset+18*2, 4*2);// (4 bytes), creates (n) Offset 18
                 uncompressedSize = zipFileString.mid(strOffset+22*2, 4*2);// (4 bytes)  Offset 22
@@ -432,17 +432,17 @@ public class Zipper
             //offset = offset /2;
 
             Integer theStart = offset+30;
-            Integer theEnd = theStart + (Integer)HexUtil.hexToLongLE(fileNameLength);
+            Integer theEnd = theStart + HexUtil.hexToIntLE(fileNameLength);
             fileName = zipFileString.substring(theStart*2, theEnd*2);// (f bytes)       Offset 30
             theStart = theEnd;
-            theEnd = theStart + (Integer)HexUtil.hexToLongLE(extraFieldLength);
+            theEnd = theStart + HexUtil.hexToIntLE(extraFieldLength);
             extraField = zipFileString.substring(theStart*2, theEnd*2);// (e bytes)        Offset 30 + fileNameLength
             theStart = theEnd;
-            theEnd = theStart + (Integer)HexUtil.hexToLongLE(compressedSize);
+            theEnd = theStart + HexUtil.hexToIntLE(compressedSize);
             compressedFileData = zipFileString.substring(theStart*2, theEnd*2);// (c bytes)        Offset 30 + fileNameLength + extraFieldLength
             l_offsetToNextRecord = theEnd;
             
-            if ((HexUtil.hexToLongLE(gPFlagBit.left(2)) & 8 ) != 0) {
+            if ((HexUtil.hexToIntLE(gPFlagBit.left(2)) & 8 ) != 0) {
                 l_offsetToNextRecord *= 2;
                 String signature = zipFileString.mid(l_offsetToNextRecord+0*2, 4*2); // (4 bytes)
                 if (signature != DDSignature) {l_offsetToNextRecord -= 4*2;}
@@ -460,11 +460,11 @@ public class Zipper
                 crc32 = HexUtil.intToHexLE(HexUtil.CRC32Table(compressedFileData), 4);// (4 bytes) 
             }
 
-            l_offsetToNextRecord = (Integer)HexUtil.hexToLongLE(offsetOfLH) 
+            l_offsetToNextRecord = HexUtil.hexToIntLE(offsetOfLH) 
                                  + 30 
-                                 + (Integer)HexUtil.hexToLongLE(fileNameLength)
-                                 + (Integer)HexUtil.hexToLongLE(extraFieldLength)
-                                 + (Integer)HexUtil.hexToLongLE(compressedSize);
+                                 + HexUtil.hexToIntLE(fileNameLength)
+                                 + HexUtil.hexToIntLE(extraFieldLength)
+                                 + HexUtil.hexToIntLE(compressedSize);
 
             return Zipper.LFHSignature + minExtractorVersion + gPFlagBit + compressionMethod + lastModTime 
                     + lastModDate + crc32 + compressedSize + uncompressedSize + fileNameLength + extraFieldLength 

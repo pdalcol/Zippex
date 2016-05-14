@@ -141,9 +141,9 @@ public class HexUtil {
 
     //}
     
-    //Hex to Long Little Endian
-    public static Long hexToLongLE(String hexStr){
-        Long mask = 4294967295L; //FFFFFFFF
+    //Hex to Int Little Endian
+    public static Integer hexToIntLE(String hexStr){
+        //Long mask = 4294967295L; //FFFFFFFF
         Integer result = 0;
 
         for (Integer j = 0; j < hexStr.length(); j+=2){
@@ -151,7 +151,8 @@ public class HexUtil {
             result |= (((hexStr.charAt(j+1) & 15)+(hexStr.charAt(j+1)>>>6)*9)) << (4*(j  ));
         }
 
-        return result & mask;
+        //return (result & mask); //remove sign from int
+        return result;
     }
 
     //Int to Little Endian Hex
