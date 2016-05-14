@@ -37,6 +37,7 @@ public class Zipper
         return zipFileMap.keySet().clone();
     }
 
+    //Returns true if current archive contains the specified file
     public Boolean containsFile(String fileName)
     {
         return zipFileMap.containsKey(fileName);
@@ -111,7 +112,7 @@ public class Zipper
             return null;
         }
     }
-    //  Returns file metadata (crc32, fileSize, fileName, and fileComment).
+    //  Returns file metadata (lastModDateTime, crc32, fileSize, fileName, and fileComment).
     public Map<String,String> getFileInfo(String fileName)
     {
         Map<String,String> fileInfo = new Map<String,String>();
@@ -119,11 +120,7 @@ public class Zipper
 
         FileObject tmpFO = zipFileMap.get(fileName);
 
-        /////Add last mod DateTime too
         fileInfo.put('lastModDateTime', String.valueOf(getLastModDateTime((Integer)HexUtil.hexToLOngLE(tmpFO.lastModDate), (Integer)HexUtil.hexToLOngLE(tmpFO.lastModTime))));
-
-        //fileInfo.put('lastModTime', lastModTime);
-        //fileInfo.put('lastModDate', lastModDate);
         fileInfo.put('crc32', tmpFO.crc32);
         fileInfo.put('fileSize', String.valueOf( HexUtil.hexToLongLE(tmpFO.uncompressedSize)));
         fileInfo.put('fileName',  EncodingUtil.convertFromHex(tmpFO.fileName).toString());
@@ -165,7 +162,7 @@ public class Zipper
     {
         Integer zipFileSize;
 
-        /////// delete central directory and end of Central directory
+        // delete central directory and end of Central directory
         zipFileString = zipFileString.left((Integer)HexUtil.hexToLongLE(offsetOfStartOfCentralDir)*2);
 
         //Writing Local Headers and data for each file not already in zip
@@ -319,7 +316,7 @@ public class Zipper
         return zipDateStamp;
     }
 
-    public static DateTime getLastModDateTime (Integer lastModDate, Integer lastModtime)
+    public static DateTime getLastModDateTime(Integer lastModDate, Integer lastModtime)
     {
         Integer year, month, day, hour, minute, second;
         day = lastModDate & 31;

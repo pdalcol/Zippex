@@ -47,7 +47,7 @@ Follow this link to install the latest package:
 ###How to use
 
 ####Constructors:
-####zipper()
+####Zipper()
 ```Apex
 public Zipper()
 ```
@@ -57,7 +57,7 @@ Instantiates a new empty zipper object (empty zip archive).
 Zipper sampleZip = new Zipper();
 ```
 
-####zipper(fileData)
+####Zipper(fileData)
 ```Apex
 public Zipper(Blob fileData)
 ```
@@ -93,6 +93,25 @@ Zipper sampleZip = new Zipper();
 Blob fileData = Blob.valueOf('Sample text.');
 sampleZip.addFile('sampleFolder/test.txt', fileData, null);
 Blob zipData = sampleZip.getZipArchive();
+```
+
+
+####containsFile(fileName)
+```Apex
+public void containsFile(String fileName)
+```
+Returns true if the current zip archive contains the specified file.
+
+######Parameters
+Name     | Type       | Description
+---------|------------|--------
+fileName | String     | File name including full path
+
+######Example
+```Apex
+Zipper sampleZip = new Zipper();
+sampleZip.addFile('sampleFolder/test.txt', Blob.valueOf('Sample text.'), null);
+System.assert(sampleZip.containsFile('sampleFolder/test.txt'));
 ```
 
 
@@ -139,13 +158,13 @@ System.assertEquals ('Sample text.', fileData.toString());
 ```Apex
 public Map<String,String> getFileInfo(String fileName)
 ```
-Returns file metadata (crc32, fileSize, fileName, and fileComment).
+Returns file metadata (lastModDateTime, crc32, fileSize, fileName, and fileComment).
 
 ######Parameters
 Name       |    Type                  | Description
 -----------|--------------------------|--------
 fileName   | String                   | File name including full path
-**Return** | Map&lt;String,String&gt; | Contains values for crc32, fileSize, fileName, and fileComment
+**Return** | Map&lt;String,String&gt; | Contains values for lastModDateTime, crc32, fileSize, fileName, and fileComment
 
 ######Example
 ```Apex
