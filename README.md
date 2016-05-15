@@ -52,7 +52,7 @@ Follow this link to install the latest package:
 ```Apex
 public Zipper()
 ```
-Instantiates a new empty zipper object (empty zip archive).
+Instantiates a new empty zipper object (empty Zip archive).
 ######Example
 ```Apex
 Zipper sampleZip = new Zipper();
@@ -62,12 +62,12 @@ Zipper sampleZip = new Zipper();
 ```Apex
 public Zipper(Blob fileData)
 ```
-Instantiates a new zipper object from an existing zip file.
+Instantiates a new zipper object from an existing Zip file.
 
 ######Parameters
 Name     | Type       | Description
 ---------|------------|--------
-fileData | Blob       | Data containing a valid zip file
+fileData | Blob       | Data containing a valid Zip file
 
 ######Example
 ```Apex
@@ -79,7 +79,7 @@ Zipper sampleZip = new Zipper(sampleAttachment.Body);
 ```Apex
 public void addFile(String fileName, Blob fileData, String crc32)
 ```
-Adds a new file to the current zip archive.
+Adds a new file to the current Zip archive.
 
 ######Parameters
 Name     | Type       | Description
@@ -101,7 +101,7 @@ Blob zipData = sampleZip.getZipArchive();
 ```Apex
 public Boolean containsFile(String fileName)
 ```
-Returns true if the current zip archive contains the specified file.
+Returns true if the current Zip archive contains the specified file.
 
 ######Parameters
 Name      | Type       | Description
@@ -120,11 +120,11 @@ System.assert(sampleZip.containsFile('sampleFolder/test.txt'));
 ```Apex
 public Set<String> getFileNames()
 ```
-Returns a set of filenames from the current zip archive.
+Returns a set of filenames from the current Zip archive.
 ######Parameters
 Name       | Type              | Description
 -----------|-------------------|--------
-**Return** | Set&lt;String&gt; | Returns all file names including full path in the current zip archive
+**Return** | Set&lt;String&gt; | Returns all file names including full path in the current Zip archive
 ######Example
 ```Apex
 Attachment sampleAttachment = [SELECT Name, Body FROM Attachment WHERE Id='<ID_OF_ATTACHMENT>'];
@@ -141,7 +141,7 @@ for (String fileName : fileNames)
 public Blob getFile(String fileName)
 
 ```
-Extracts the specified file contents from the current zip archive.  If the file does not exist, returns null.
+Extracts the specified file contents from the current Zip archive.  If the file does not exist, returns null.
 ######Parameters
 Name      | Type       | Description
 ----------|------------|--------
@@ -196,11 +196,11 @@ Blob zipData = sampleZip.getZipArchive();
 ```Apex
 public void removeFile(String fileName)
 ```
-Removes a file from the current zip archive.
+Removes a file from the current Zip archive.
 ######Parameters
 Name     | Type       | Description
 ---------|------------|--------
-fileName | String     | File name to remove from zip archive including full path
+fileName | String     | File name to remove from Zip archive including full path
 ######Example
 ```Apex
 Zipper sampleZip = new Zipper();
@@ -218,7 +218,7 @@ System.assert(sampleZip.getFileNames().contains('sampleFolder/file2.txt'));
 ```Apex
 public void renameFile(String oldName, String newName)
 ```
-Renames a file in the current zip archive.
+Renames a file in the current Zip archive.
 ######Parameters
 Name     | Type       | Description
 ---------|------------|--------
@@ -266,7 +266,7 @@ public static void unzipAttachment(Id srcAttId, Id destObjId, String[] fileNames
 Name         | Type       | Description
 -------------|------------|--------
 srcAttId     | Id         | ID of the attachment to unzip 
-destObjId    | Id         | ID of the object to which unzipped files should be attached. If null the ParentId of the zip archive will be used
+destObjId    | Id         | ID of the object to which unzipped files should be attached. If null the ParentId of the Zip archive will be used
 fileNames    | String[]   | List containing file names to uncompress.  If null, all files will be uncompressed
 attemptAsync | Boolean    | If true, it attempts to unzip files in a future call
 ######Example
