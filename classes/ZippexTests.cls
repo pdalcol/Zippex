@@ -2,7 +2,7 @@
 //Copyright (c) 2015 Pedro Dal Col, Pliny Smith
 //
 @isTest
-private class ZipperTests 
+private class ZippexTests 
 {
     @isTest static void testHexUtil() 
     {
@@ -44,39 +44,39 @@ private class ZipperTests
     @isTest static void zipTest() 
     {
         Blob tinyZip = EncodingUtil.convertFromHex('504B030414000800080096BC7A4700000000000000000000000008001000746578742E74787455580C0055EC5756ECEB5756262ABF22F3C8E40200504B07089A3C22D50500000003000000504B0102150314000800080096BC7A479A3C22D5050000000300000008000C000000000000000040A48100000000746578742E7478745558080055EC5756ECEB5756504B05060000000001000100420000004B0000000000');
-        Zipper testZipper = new Zipper(tinyZip);
-        System.assertEquals(testZipper.getFileNames(), new Set<String>{'text.txt'});
-        System.assertEquals(testZipper.getFile('text.txt').toString(), 'Hi\n');
+        Zippex testZippex = new Zippex(tinyZip);
+        System.assertEquals(testZippex.getFileNames(), new Set<String>{'text.txt'});
+        System.assertEquals(testZippex.getFile('text.txt').toString(), 'Hi\n');
         
-        testZipper.addFile('newDir/added.txt',Blob.valueOf('new data\n'), null);
-        System.assertEquals(testZipper.getFileNames(), new Set<String>{'text.txt','newDir/added.txt'});
-        System.assertEquals(testZipper.getFile('newDir/added.txt').toString(), 'new data\n');
+        testZippex.addFile('newDir/added.txt',Blob.valueOf('new data\n'), null);
+        System.assertEquals(testZippex.getFileNames(), new Set<String>{'text.txt','newDir/added.txt'});
+        System.assertEquals(testZippex.getFile('newDir/added.txt').toString(), 'new data\n');
         
-        testZipper.renameFile('text.txt','newDir/changedName.txt');
-        System.assertEquals(testZipper.getFileNames(), new Set<String>{'newDir/changedName.txt','newDir/added.txt'});
+        testZippex.renameFile('text.txt','newDir/changedName.txt');
+        System.assertEquals(testZippex.getFileNames(), new Set<String>{'newDir/changedName.txt','newDir/added.txt'});
         
-        testZipper.removePrefix('newDir/');
-        System.assertEquals(testZipper.getFileNames(), new Set<String>{'changedName.txt','added.txt'});
+        testZippex.removePrefix('newDir/');
+        System.assertEquals(testZippex.getFileNames(), new Set<String>{'changedName.txt','added.txt'});
 
-        testZipper.addFile('added.txt',Blob.valueOf('even newer data\n'), null);
-        System.assertEquals(testZipper.getFileNames(), new Set<String>{'changedName.txt','added.txt'});
-        System.assertEquals(testZipper.getFile('added.txt').toString(), 'even newer data\n');
+        testZippex.addFile('added.txt',Blob.valueOf('even newer data\n'), null);
+        System.assertEquals(testZippex.getFileNames(), new Set<String>{'changedName.txt','added.txt'});
+        System.assertEquals(testZippex.getFile('added.txt').toString(), 'even newer data\n');
         
-        testZipper.removeFile('notHere.txt');
-        System.assertEquals(testZipper.getFileNames(), new Set<String>{'changedName.txt','added.txt'});
+        testZippex.removeFile('notHere.txt');
+        System.assertEquals(testZippex.getFileNames(), new Set<String>{'changedName.txt','added.txt'});
 
-        testZipper.addFile('secondAdd.txt',Blob.valueOf('important\n'), null);
-        testZipper.addFile('thirdAdd.txt',Blob.valueOf('less important\n'), null);
-        testZipper.removeFile('changedName.txt');
-        System.assertEquals(testZipper.getFileNames(), new Set<String>{'added.txt','secondAdd.txt', 'thirdAdd.txt'});
+        testZippex.addFile('secondAdd.txt',Blob.valueOf('important\n'), null);
+        testZippex.addFile('thirdAdd.txt',Blob.valueOf('less important\n'), null);
+        testZippex.removeFile('changedName.txt');
+        System.assertEquals(testZippex.getFileNames(), new Set<String>{'added.txt','secondAdd.txt', 'thirdAdd.txt'});
 
-        Blob newTinyZip = testZipper.getZipArchive();
-        Zipper newTestZipper = new Zipper(newTinyZip);
-        System.assertEquals(newTestZipper.getFileNames(), new Set<String>{'added.txt','secondAdd.txt', 'thirdAdd.txt'});
-        System.assertEquals(testZipper.getFile('added.txt').toString(), 'even newer data\n');
+        Blob newTinyZip = testZippex.getZipArchive();
+        Zippex newTestZippex = new Zippex(newTinyZip);
+        System.assertEquals(newTestZippex.getFileNames(), new Set<String>{'added.txt','secondAdd.txt', 'thirdAdd.txt'});
+        System.assertEquals(testZippex.getFile('added.txt').toString(), 'even newer data\n');
         
-        newTestZipper.removeFile('added.txt');
-        System.assertEquals(newTestZipper.getFileNames(), new Set<String>{'secondAdd.txt', 'thirdAdd.txt'});
+        newTestZippex.removeFile('added.txt');
+        System.assertEquals(newTestZippex.getFileNames(), new Set<String>{'secondAdd.txt', 'thirdAdd.txt'});
 
     }
 
