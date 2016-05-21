@@ -6,8 +6,8 @@ Native Apex Zip utility for the salesforce.com platform.
 ###Table of Contents
 * [How to install](#how-to-install)
 * [Constructors](#constructors)
-    * [Zippex()](#Zippex-1)
-    * [Zippex(fileData)](#Zippexfiledata)
+    * [Zippex()](#zippex-1)
+    * [Zippex(fileData)](#zippexfiledata)
 * [Public Methods](#public-methods)
     * [addFile(fileName, fileData, crc32)](#addfilefilename-filedata-crc32)
     * [containsFile(fileName)](#containsfilefilename)
