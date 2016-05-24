@@ -6,8 +6,8 @@ Native Apex Zip utility for the salesforce.com platform.
 ###Table of Contents
 * [How to install](#how-to-install)
 * [Constructors](#constructors)
-    * [Zipper()](#zipper-1)
-    * [Zipper(fileData)](#zipperfiledata)
+    * [Zippex()](#zippex)
+    * [Zippex(fileData)](#zippexfiledata)
 * [Public Methods](#public-methods)
     * [addFile(fileName, fileData, crc32)](#addfilefilename-filedata-crc32)
     * [containsFile(fileName)](#containsfilefilename)
@@ -29,8 +29,8 @@ Copy and paste from this repository the following four classes into new classes 
 
 1. HexUtil.cls
 2. Puff.cls
-3. Zipper.cls
-4. ZipperTests.cls 
+3. Zippex.cls
+4. ZippexTests.cls 
 
 <!--
 ####Option 2: Install from Unmanaged Package
@@ -48,21 +48,21 @@ Follow this link to install the latest package:
 ###How to use
 
 ####Constructors:
-####Zipper()
+####Zippex()
 ```Apex
-public Zipper()
+public Zippex()
 ```
-Instantiates a new empty zipper object (empty Zip archive).
+Instantiates a new empty Zippex object (empty Zip archive).
 ######Example
 ```Apex
-Zipper sampleZip = new Zipper();
+Zippex sampleZip = new Zippex();
 ```
 
-####Zipper(fileData)
+####Zippex(fileData)
 ```Apex
-public Zipper(Blob fileData)
+public Zippex(Blob fileData)
 ```
-Instantiates a new zipper object from an existing Zip file.
+Instantiates a new Zippex object from an existing Zip file.
 
 ######Parameters
 Name     | Type       | Description
@@ -72,7 +72,7 @@ fileData | Blob       | Data containing a valid Zip file
 ######Example
 ```Apex
 Attachment sampleAttachment = [SELECT Name, Body FROM Attachment WHERE Id='<ID_OF_ATTACHMENT>'];
-Zipper sampleZip = new Zipper(sampleAttachment.Body);
+Zippex sampleZip = new Zippex(sampleAttachment.Body);
 ```
 ####Public Methods:
 ####addFile(fileName, fileData, crc32)
@@ -90,7 +90,7 @@ crc32    | String     | **(optional)** little endian hex value of the CRC32.  En
 
 ######Example
 ```Apex
-Zipper sampleZip = new Zipper();
+Zippex sampleZip = new Zippex();
 Blob fileData = Blob.valueOf('Sample text.');
 sampleZip.addFile('sampleFolder/test.txt', fileData, null);
 Blob zipData = sampleZip.getZipArchive();
@@ -110,7 +110,7 @@ fileName  | String     | File name including full path
 **Return**| Boolean    | Return true if file is in Zip archive
 ######Example
 ```Apex
-Zipper sampleZip = new Zipper();
+Zippex sampleZip = new Zippex();
 sampleZip.addFile('sampleFolder/test.txt', Blob.valueOf('Sample text.'), null);
 System.assert(sampleZip.containsFile('sampleFolder/test.txt'));
 ```
@@ -128,7 +128,7 @@ Name       | Type              | Description
 ######Example
 ```Apex
 Attachment sampleAttachment = [SELECT Name, Body FROM Attachment WHERE Id='<ID_OF_ATTACHMENT>'];
-Zipper sampleZip = new Zipper(sampleAttachment.Body);
+Zippex sampleZip = new Zippex(sampleAttachment.Body);
 Set <String> fileNames = sampleZip.getFileNames();
 for (String fileName : fileNames)
 {
@@ -149,7 +149,7 @@ fileName  | String     | File name including full path
 **Return**| Blob       | File data
 ######Example
 ```Apex
-Zipper sampleZip = new Zipper();
+Zippex sampleZip = new Zippex();
 sampleZip.addFile('sampleFolder/test.txt', Blob.valueOf('Sample text.'), null);
 Blob fileData = sampleZip.getFile('sampleFolder/test.txt');
 System.assertEquals ('Sample text.', fileData.toString());
@@ -169,7 +169,7 @@ fileName   | String                   | File name including full path
 
 ######Example
 ```Apex
-Zipper sampleZip = new Zipper();
+Zippex sampleZip = new Zippex();
 sampleZip.addFile('sampleFolder/test.txt', Blob.valueOf('Sample text.'), null);
 Map <String, String> fileInfoMap = sampleZip.getFileInfo('sampleFolder/test.txt');
 System.assertEquals ('12', fileInfoMap.get('fileSize'));
@@ -187,7 +187,7 @@ Name       | Type       | Description
 **Return** | Blob       | Full Zip archive data
 ######Example
 ```Apex
-Zipper sampleZip = new Zipper();
+Zippex sampleZip = new Zippex();
 sampleZip.addFile('sampleFolder/test.txt', Blob.valueOf('Sample text.'), null);
 Blob zipData = sampleZip.getZipArchive();
 ```
@@ -203,7 +203,7 @@ Name     | Type       | Description
 fileName | String     | File name to remove from Zip archive including full path
 ######Example
 ```Apex
-Zipper sampleZip = new Zipper();
+Zippex sampleZip = new Zippex();
 sampleZip.addFile('sampleFolder/file1.txt', Blob.valueOf('Sample text1.'), null);
 sampleZip.addFile('sampleFolder/file2.txt', Blob.valueOf('Sample text2.'), null);
 System.assert(sampleZip.getFileNames().contains('sampleFolder/file1.txt'));
@@ -227,7 +227,7 @@ newName  | String     | The new name that replaces the current file name
 
 ######Example
 ```Apex
-Zipper sampleZip = new Zipper();
+Zippex sampleZip = new Zippex();
 sampleZip.addFile('sampleFolder/file.txt', Blob.valueOf('Sample text1.'), null);
 System.assert(sampleZip.getFileNames().contains('sampleFolder/file.txt'));
 sampleZip.renameFile('sampleFolder/file.txt', 'sampleFolder/changedName.txt');
@@ -248,7 +248,7 @@ Name     | Type       | Description
 prefix   | String     | The prefix to remove from file names
 ######Example
 ```Apex
-Zipper sampleZip = new Zipper();
+Zippex sampleZip = new Zippex();
 sampleZip.addFile('sampleFolder/file.txt', Blob.valueOf('Sample text1.'), null);
 System.assert(sampleZip.getFileNames().contains('sampleFolder/file.txt'));
 sampleZip.removePrefix('sample');
@@ -271,7 +271,7 @@ fileNames    | String[]   | List containing file names to uncompress.  If null, 
 attemptAsync | Boolean    | If true, it attempts to unzip files in a future call
 ######Example
 ```Apex
-Zipper.unzipAttachment('<ID_OF_ATTACHMENT>', null, null, false);
+Zippex.unzipAttachment('<ID_OF_ATTACHMENT>', null, null, false);
 ```
 
 

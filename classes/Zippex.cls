@@ -1,18 +1,18 @@
 //
 //Copyright (c) 2015 Pedro Dal Col, Pliny Smith
 //
-public class Zipper 
+public class Zippex 
 {    
     private Map<String, FileObject> zipFileMap = new Map<String, FileObject>{};
     protected String zipFileString = '';  // stores the Hex version of the file blob
     
-    // Zipper constructor
-    // Instantiates a new empty zipper object (empty zip archive).
-    public Zipper(){}
+    // Zippex constructor
+    // Instantiates a new empty Zippex object (empty Zip archive).
+    public Zippex(){}
    
-    // Zipper UnZipping Constructor
-    // Instantiates a new zipper object from an existing zip file passed as a Blob
-    public Zipper(Blob fileData)
+    // Zippex UnZipping Constructor
+    // Instantiates a new Zippex object from an existing Zip archive passed as a Blob
+    public Zippex(Blob fileData)
     {
         zipFileString = EncodingUtil.convertToHex(fileData);
         Integer offsetOfEndCentralDirSignature = zipFileString.lastIndexOf(endCentralDirSignature);
@@ -31,7 +31,7 @@ public class Zipper
         }
     }
     
-    //  Returns a set of filenames from the current zip archive.
+    //  Returns a set of filenames from the current Zip archive.
     public Set<String> getFileNames()
     {
         return zipFileMap.keySet().clone();
@@ -56,22 +56,22 @@ public class Zipper
         Attachment src = [SELECT ParentId, Body FROM Attachment WHERE Id=:srcAttId];
         Attachment[] Atts = new List<Attachment>();
 
-        Zipper myZipper = new Zipper(src.Body);
+        Zippex myZippex = new Zippex(src.Body);
 
         if (destObjId == null){
             destObjId = src.ParentId;
         }
 
         if (fileNames == null){
-            fileNames = new List<String>(myZipper.getFileNames());
+            fileNames = new List<String>(myZippex.getFileNames());
         }
         Blob attBody;
         for (String fileName : fileNames) {
-            attBody = myZipper.getFile(fileName);
+            attBody = myZippex.getFile(fileName);
             if (attBody != null ) {
                 Atts.add(new Attachment (ParentId = destObjId,
                                       Name = fileName, 
-                                      Body = myZipper.getFile(fileName)));
+                                      Body = myZippex.getFile(fileName)));
             }
             attBody = null;
             //if (Limits.getHeapSize() >= .2 * Limits.getLimitHeapSize()){
@@ -86,7 +86,7 @@ public class Zipper
         unzipAttachment(srcAttId, destObjId, fileNames, false);        
     }
 
-    // Extracts the specified file contents from the current zip archive.  If the file does not exist, returns null.
+    // Extracts the specified file contents from the current Zip archive.  If the file does not exist, returns null.
     public Blob getFile(String fileName)
     {
         if (!zipFileMap.containsKey(fileName)) {return null;}
@@ -94,7 +94,7 @@ public class Zipper
         FileObject tempFileObject = zipFileMap.get(fileName);
 
         if (tempFileObject.fileDataInZipStr) {
-            tempFileObject.readLocalFileHeader(zipFileString, HexUtil.hexToIntLE( tempFileObject.offsetOfLH));
+            tempFileObject.readLocalFileHeader(zipFileString, HexUtil.hexToIntLE(tempFileObject.offsetOfLH));
         }
 
         if (tempFileObject.compressionMethod == '0000')
@@ -108,7 +108,7 @@ public class Zipper
                              HexUtil.hexToIntLE(tempFileObject.uncompressedSize)).inflate());
         }
         else {
-            //System.assert(false,'Unsupported compression method: ' + tempFileObject.compressionMethod);
+            System.assert(false,'Unsupported compression method: ' + HexUtil.hexToIntLE(tempFileObject.compressionMethod));
             return null;
         }
     }
@@ -165,7 +165,7 @@ public class Zipper
         // delete central directory and end of Central directory
         zipFileString = zipFileString.left(HexUtil.hexToIntLE(offsetOfStartOfCentralDir)*2);
 
-        //Writing Local Headers and data for each file not already in zip
+        //Writing Local Headers and data for each file not already in Zip string
         zipfileSize = zipFileString.length()/2;
         for (FileObject tempFileObject : zipFileMap.values())
         {
@@ -195,7 +195,7 @@ public class Zipper
         return EncodingUtil.convertFromHex(zipFileString);
     }
 
-    // Removes a file from the current zip archive.
+    // Removes a file from the current Zip archive.
     public void removeFile(String fileName){
 
         if(!zipFileMap.containsKey(fileName)) {return;}
@@ -224,7 +224,7 @@ public class Zipper
         offsetOfStartOfCentralDir = HexUtil.intToHexLE(HexUtil.hexToIntLE(offsetOfStartOfCentralDir) + delta , 4);
     }
 
-    //  Adds a new file to the current zip archive.
+    //  Adds a new file to the current Zip archive.
     public void addFile(String fileName, Blob fileData, String crc32)
     {
 
@@ -251,10 +251,10 @@ public class Zipper
         tempFileObject.compressedFileData = EncodingUtil.convertToHex(fileData); // (n bytes) // from the parameters passed
         tempFileObject.fileDataInZipStr   = false;
 
-        zipFileMap.put(fileName, tempFileObject);  //add the new subFile to the Zip List
+        zipFileMap.put(fileName, tempFileObject);  //add the new file to the file map
     }
 
-    // Renames a file in the current zip archive.
+    // Renames a file in the current Zip archive.
     public void renameFile(String oldName, String newName)
     {
         if (!zipFileMap.containsKey(oldName)) {return;}
@@ -404,7 +404,7 @@ public class Zipper
         theEnd = theStart + HexUtil.hexToIntLE(fileCommentLength);
         fileComment = zipFileString.substring(theStart*2, theEnd*2);// (c bytes)        Offset 46 + fileNameLength + extraFieldLength
         c_offsetToNextRecord = theEnd;
-        fileDataInZipStr = true; //true because we are reading an existing zip file
+        fileDataInZipStr = true; //true because we are reading an existing Zip archive
         //System.debug(this);
         }
         
@@ -466,7 +466,7 @@ public class Zipper
                                  + HexUtil.hexToIntLE(extraFieldLength)
                                  + HexUtil.hexToIntLE(compressedSize);
 
-            return Zipper.LFHSignature + minExtractorVersion + gPFlagBit + compressionMethod + lastModTime 
+            return Zippex.LFHSignature + minExtractorVersion + gPFlagBit + compressionMethod + lastModTime 
                     + lastModDate + crc32 + compressedSize + uncompressedSize + fileNameLength + extraFieldLength 
                     + fileName + extraField + compressedFileData;
         }
@@ -476,7 +476,7 @@ public class Zipper
             if (String.isBlank(crc32)) {  
                 crc32 = HexUtil.intToHexLE(HexUtil.CRC32Table(compressedFileData), 4);// (4 bytes) 
             }
-            return Zipper.CFHSignature + creatorVersion + minExtractorVersion + gPFlagBit + compressionMethod + lastModTime 
+            return Zippex.CFHSignature + creatorVersion + minExtractorVersion + gPFlagBit + compressionMethod + lastModTime 
                     + lastModDate + crc32 + compressedSize + uncompressedSize + fileNameLength + extraFieldLength
                     + fileCommentLength + diskNumStart + internalFileAtt + externalFileAtt + offsetOfLH + fileName 
                     + extraField + fileComment;
