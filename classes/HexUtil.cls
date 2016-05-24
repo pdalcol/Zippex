@@ -83,7 +83,7 @@ public class HexUtil {
         return crc;
     }
 /*
-    public static Integer CRC32Table(Zipper.FileObject fObj) 
+    public static Integer CRC32Table(Zippex.FileObject fObj) 
     { 
         //String hexString = EncodingUtil.convertToHex(data);
         //Integer[] intArr = new List<Integer>();//fObj.fileData.getChars();

@@ -1,18 +1,18 @@
 //
 //Copyright (c) 2015 Pedro Dal Col, Pliny Smith
 //
-public class Zipper 
+public class Zippex 
 {    
     private Map<String, FileObject> zipFileMap = new Map<String, FileObject>{};
     protected String zipFileString = '';  // stores the Hex version of the file blob
     
-    // Zipper constructor
-    // Instantiates a new empty zipper object (empty Zip archive).
-    public Zipper(){}
+    // Zippex constructor
+    // Instantiates a new empty Zippex object (empty Zip archive).
+    public Zippex(){}
    
-    // Zipper UnZipping Constructor
-    // Instantiates a new zipper object from an existing Zip archive passed as a Blob
-    public Zipper(Blob fileData)
+    // Zippex UnZipping Constructor
+    // Instantiates a new Zippex object from an existing Zip archive passed as a Blob
+    public Zippex(Blob fileData)
     {
         zipFileString = EncodingUtil.convertToHex(fileData);
         Integer offsetOfEndCentralDirSignature = zipFileString.lastIndexOf(endCentralDirSignature);
@@ -56,22 +56,22 @@ public class Zipper
         Attachment src = [SELECT ParentId, Body FROM Attachment WHERE Id=:srcAttId];
         Attachment[] Atts = new List<Attachment>();
 
-        Zipper myZipper = new Zipper(src.Body);
+        Zippex myZippex = new Zippex(src.Body);
 
         if (destObjId == null){
             destObjId = src.ParentId;
         }
 
         if (fileNames == null){
-            fileNames = new List<String>(myZipper.getFileNames());
+            fileNames = new List<String>(myZippex.getFileNames());
         }
         Blob attBody;
         for (String fileName : fileNames) {
-            attBody = myZipper.getFile(fileName);
+            attBody = myZippex.getFile(fileName);
             if (attBody != null ) {
                 Atts.add(new Attachment (ParentId = destObjId,
                                       Name = fileName, 
-                                      Body = myZipper.getFile(fileName)));
+                                      Body = myZippex.getFile(fileName)));
             }
             attBody = null;
             //if (Limits.getHeapSize() >= .2 * Limits.getLimitHeapSize()){
@@ -94,7 +94,7 @@ public class Zipper
         FileObject tempFileObject = zipFileMap.get(fileName);
 
         if (tempFileObject.fileDataInZipStr) {
-            tempFileObject.readLocalFileHeader(zipFileString, HexUtil.hexToIntLE( tempFileObject.offsetOfLH));
+            tempFileObject.readLocalFileHeader(zipFileString, HexUtil.hexToIntLE(tempFileObject.offsetOfLH));
         }
 
         if (tempFileObject.compressionMethod == '0000')
@@ -108,7 +108,7 @@ public class Zipper
                              HexUtil.hexToIntLE(tempFileObject.uncompressedSize)).inflate());
         }
         else {
-            //System.assert(false,'Unsupported compression method: ' + tempFileObject.compressionMethod);
+            System.assert(false,'Unsupported compression method: ' + HexUtil.hexToIntLE(tempFileObject.compressionMethod));
             return null;
         }
     }
@@ -466,7 +466,7 @@ public class Zipper
                                  + HexUtil.hexToIntLE(extraFieldLength)
                                  + HexUtil.hexToIntLE(compressedSize);
 
-            return Zipper.LFHSignature + minExtractorVersion + gPFlagBit + compressionMethod + lastModTime 
+            return Zippex.LFHSignature + minExtractorVersion + gPFlagBit + compressionMethod + lastModTime 
                     + lastModDate + crc32 + compressedSize + uncompressedSize + fileNameLength + extraFieldLength 
                     + fileName + extraField + compressedFileData;
         }
@@ -476,7 +476,7 @@ public class Zipper
             if (String.isBlank(crc32)) {  
                 crc32 = HexUtil.intToHexLE(HexUtil.CRC32Table(compressedFileData), 4);// (4 bytes) 
             }
-            return Zipper.CFHSignature + creatorVersion + minExtractorVersion + gPFlagBit + compressionMethod + lastModTime 
+            return Zippex.CFHSignature + creatorVersion + minExtractorVersion + gPFlagBit + compressionMethod + lastModTime 
                     + lastModDate + crc32 + compressedSize + uncompressedSize + fileNameLength + extraFieldLength
                     + fileCommentLength + diskNumStart + internalFileAtt + externalFileAtt + offsetOfLH + fileName 
                     + extraField + fileComment;
