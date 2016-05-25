@@ -40,7 +40,7 @@ Follow this link to install the latest package:
 -->
 ####Option 2: Use the 'Deploy to Salesforce' button
 
-<a href="https://githubsfdeploy.herokuapp.com?owner=pdalcol&repo=Zipper">
+<a href="https://githubsfdeploy.herokuapp.com?owner=pdalcol&repo=Zippex">
   <img alt="Deploy to Salesforce"
        src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/src/main/webapp/resources/img/deploy.png">
 </a>
