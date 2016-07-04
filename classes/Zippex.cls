@@ -51,7 +51,10 @@ public class Zippex
                 unzipAttachmentAsync(srcAttId, destObjId, fileNames);
                 return;
             }
-        } catch (Exception e){}
+        } catch (Exception e){
+            unzipAttachment(srcAttId, destObjId, fileNames, false);
+            return;
+        }
 
         Attachment src = [SELECT ParentId, Body FROM Attachment WHERE Id=:srcAttId];
         Attachment[] Atts = new List<Attachment>();
